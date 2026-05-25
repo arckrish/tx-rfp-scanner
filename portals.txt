@@ -1,0 +1,105 @@
+# portals.txt -- Texas Procurement Portal manifest
+# Format:  Name::type::path-or-url   (one per line; # = comment)
+#   type        = city | county
+#   path-or-url = a live portal URL, a saved .html page, or a .har capture
+#
+# Run:  ./refresh.sh            (ESBD + saved pages + these URLs)
+#       ./refresh.sh --render   (also render JavaScript portals live)
+#
+# Supported platforms parse automatically: ProcureWare, CivicPlus, Bonfire,
+# Ionwave, DemandStar, BidNet Direct, OpenGov, texasbids.net. Others (e.g.
+# BeaconBid, PlanetBids, QuestCDN) print a SKIP line until an adapter exists.
+
+# ---- CITIES (58) ----
+City of Dallas::city::https://dallascityhall.bonfirehub.com/portal/?tab=openOpportunities
+City of Fort Worth::city::https://fortworthtexas.bonfirehub.com/portal/?tab=openOpportunities
+City of Arlington::city::https://arlingtontx.bonfirehub.com/portal/?tab=openOpportunities
+City of Irving::city::https://cityofirving.ionwave.net/SourcingEvents.aspx?SourceType=1
+City of Garland::city::https://garlandtx.gov/Bids.aspx
+City of Frisco::city::https://www.friscotexas.gov/883/Current-Bids
+City of McKinney::city::https://mckinneytexas.bonfirehub.com/portal/?tab=openOpportunities
+City of Grand Prairie::city::https://vendors.planetbids.com/portal/53284/bo/bo-search
+City of Mesquite::city::https://www.bidnetdirect.com/texas/cityofmesquite
+City of Houston::city::https://www.beaconbid.com/solicitations/city-of-houston/open
+City of Denton::city::https://dentoncounty.bonfirehub.com/portal/?tab=openOpportunities
+City of Carrollton::city::https://carrolltonbids.ionwave.net/SourcingEvents.aspx?SourceType=1
+City of Richardson::city::https://texasbids.net/government-agencies/dallas/richardson-city-of---purchasing-5404/
+City of Lewisville::city::https://cityoflewisville.bonfirehub.com/portal/?tab=openOpportunities
+City of Allen::city::https://allentx.ionwave.net/SourcingEvents.aspx?SourceType=1
+City of Mansfield::city::https://www.mansfieldtexas.gov/Bids.aspx
+City of Plano::city::https://planotx.ionwave.net/SourcingEvents.aspx?SourceType=1
+City of Grapevine::city::https://gpvine.ionwave.net/SourcingEvents.aspx?SourceType=1
+City of Rockwall::city::https://www.bidnetdirect.com/texas/rockwallcounty
+City of Flower Mound::city::https://flower-mound.ionwave.net/SourcingEvents.aspx?SourceType=1
+City of Austin::city::https://financeonline.austintexas.gov/afo/account_services/solicitation/solicitations.cfm
+City of Round Rock::city::https://roundrocktexas.bonfirehub.com/portal/?tab=openOpportunities
+City of Cedar Park::city::https://www.bidnetdirect.com/texas/city-of-cedar-park
+City of Georgetown::city::https://www.demandstar.com/app/agencies/texas/city-of-georgetown-tx/procurement-opportunities/d9519efc-af40-4114-baaa-793a2fa6d9c6/
+City of Pflugerville::city::https://www.bidnetdirect.com/texas/city-of-pflugerville
+City of San Marcos::city::https://www.bidnetdirect.com/texas/city-of-san-marcos/solicitations/open-bids?selectedContent=BUYER
+City of Temple::city::https://templetx.bonfirehub.com/portal/?tab=openOpportunities
+City of Killeen::city::https://www.killeentexas.gov/Bids.aspx
+City of Waco::city::https://www.demandstar.com/app/agencies/texas/city-of-waco/procurement-opportunities/bf086506-6436-487c-b2b2-bbf24334dbc7/
+City of College Station::city::https://brazosbid.ionwave.net/SourcingEvents.aspx?SourceType=1
+City of Bryan::city::https://brazosbid.ionwave.net/SourcingEvents.aspx?SourceType=1
+City of Pasadena::city::https://www.demandstar.com/app/agencies/texas/city-of-pasadena-tx/procurement-opportunities/7e6c203f-b625-4d69-af75-fc315fae70bf/
+City of Pearland::city::https://pearland.ionwave.net/SourcingEvents.aspx?SourceType=1
+City of Sugar Land::city::https://sugarlandtx.gov/290/Bid-Opportunities
+City of Baytown::city::https://qcpi.questcdn.com/cdn/posting/?projType=all&provider=5074258&group=5074258
+City of League City::city::https://leaguecitytx.gov/bids.aspx
+City of Galveston::city::https://www.galvestontx.gov/Bids.aspx
+City of Conroe::city::https://www.cityofconroe.org/departments/purchasing/current-proposal-bid-opportunities
+City of Beaumont::city::https://www.demandstar.com/app/agencies/texas/city-of-beaumont-tx/procurement-opportunities/aa940ecd-e07d-4b83-b048-05e71f180931/
+City of New Braunfels::city::https://www.newbraunfels.gov/Bids.aspx
+City of Schertz::city::https://schertz.bonfirehub.com/portal/?tab=openOpportunities
+City of Corpus Christi::city::https://www.cctexas.com/business/supplierportal
+City of Laredo::city::https://www.demandstar.com/app/agencies/texas/city-of-laredo-tx/procurement-opportunities/523cdfc8-f9a8-4807-8de7-63a5888260b2/
+City of McAllen::city::https://mcallen.procureware.com/Bids
+City of Brownsville::city::https://www.brownsvilletx.gov/Bids.aspx
+City of Edinburg::city::https://procurement.opengov.com/portal/cityofedinburg
+City of Harlingen::city::https://harlingentx.gov/departments/finance/bid_opportunities.php
+City of Victoria::city::https://www.bidnetdirect.com/texas/city-of-victoria
+City of Midland::city::https://midlandtexas.bonfirehub.com/portal/?tab=openOpportunities
+City of Odessa::city::https://www.odessa-tx.gov/Bids.aspx
+City of San Angelo::city::https://www.demandstar.com/app/agencies/texas/city-of-san-angelo/procurement-opportunities/e1f018ee-ebca-41d7-a3a6-a6ba4b19a824/
+City of Abilene::city::https://www.demandstar.com/app/agencies/texas/abilene-isd-ebid-system/procurement-opportunities/b37219a3-a24f-4d12-aba2-fdc7e4dc1dde/
+City of Lubbock::city::https://www.demandstar.com/app/agencies/texas/city-of-lubbock/procurement-opportunities/01c5b6bb-d972-447a-9747-2c892f2674d9/
+City of Amarillo::city::https://amarillo.bonfirehub.com/portal/?tab=openOpportunities
+City of Wichita Falls::city::http://wichitafallstx.gov/bids.aspx
+City of Tyler::city::https://www.cityoftyler.org/government/departments/purchasing/vendor-bid-list
+City of Longview::city::https://longviewtexas.gov/bids.aspx
+City of Texarkana::city::https://www.texarkanatexas.gov/Bids.aspx
+
+# ---- COUNTIES (32) ----
+Dallas County::county::https://www.bidnetdirect.com/texas/dallas-county
+Tarrant County::county::https://www.demandstar.com/app/agencies/texas/tarrant-county-tx/procurement-opportunities/f061d8da-e115-4aee-9f04-6a70976f6af8/
+Collin County::county::https://www.demandstar.com/app/agencies/texas/collin-county-tx/procurement-opportunities/625b0841-af0b-405b-9946-a5bffff4fb55/
+Denton County::county::https://www.demandstar.com/app/agencies/texas/city-of-denton-tx/procurement-opportunities/0a89e995-3629-4d6b-8480-d1b33130be1f/
+Ellis County::county::https://www.demandstar.com/app/agencies/texas/county-of-ellis/procurement-opportunities/1bb90638-4be6-4cd5-88a3-4706955f30a6/
+Johnson County::county::https://www.demandstar.com/app/agencies/kansas/johnson-county-ks/procurement-opportunities/f6091745-68d0-40d7-8460-c6ae2832297c/
+Parker County::county::https://www.demandstar.com/app/agencies/texas/parker-county-tx/procurement-opportunities/e4a90252-dddb-4554-b4cc-f33865990ea2/
+Rockwall County::county::https://www.bidnetdirect.com/texas/rockwallcounty
+Travis County::county::https://www.bidnetdirect.com/texas/traviscounty
+Williamson County::county::https://www.demandstar.com/app/agencies/texas/county-of-williamson/procurement-opportunities/b64215b9-9729-44eb-902e-541bb5422192/
+Hays County::county::https://www.bidnetdirect.com/texas/hayscounty
+Bell County::county::https://texasbids.net/government-agencies/bell/bell-county-of-804814/
+McLennan County::county::https://www.demandstar.com/app/agencies/texas/mclennan-county/procurement-opportunities/d7388ddd-0d23-47b8-a8ef-2626498b35f2/
+Brazos County::county::https://www.brazoscountytx.gov/Bids.aspx
+Fort Bend County::county::https://fortbendcountytx.bonfirehub.com/portal/?tab=openOpportunities
+Montgomery County::county::https://www.montgomerytexas.gov/rfps?field_bid_rfp_status_value_1=All
+Brazoria County::county::https://brazoriacounty.bonfirehub.com/portal/?tab=openOpportunities
+Galveston County::county::https://www.demandstar.com/app/agencies/texas/county-of-galveston/procurement-opportunities/84f217a1-94de-4986-947a-6c7c21cdd440/
+Jefferson County::county::https://texasbids.net/government-agencies/jefferson/
+Guadalupe County::county::https://www.bidnetdirect.com/texas/guadalupecounty
+Nueces County::county::https://www.nuecesco.com/county-services/purchasing/bids
+Hidalgo County::county::https://www.hidalgocounty.us/bids.aspx
+Cameron County::county::https://www.bidnetdirect.com/texas/cameron-county
+Webb County::county::https://www.demandstar.com/app/agencies/texas/ebid-webb-county/procurement-opportunities/f218f32f-f0c6-4f46-8693-d2af2c64c286/
+Comal County::county::https://www.bidnetdirect.com/texas/comalcounty
+Midland County::county::https://midlandtexas.bonfirehub.com/portal/?tab=openOpportunities
+Ector County::county::https://procurement.opengov.com/portal/ectorcountytx
+Tom Green County::county::https://www.beaconbid.com/solicitations/tom-green-county-tx/open
+Taylor County::county::https://www.taylorcounty.texas.gov/Bids.aspx
+Potter County::county::https://www.demandstar.com/app/agencies/texas/county-of-potter/procurement-opportunities/fe805e9c-62b9-4b0e-a201-92111744224c/
+Smith County::county::https://www.smith-county.com/Bids.aspx
+Gregg County::county::https://greggcounty.texas.gov/departments/purchasing/bids-addendums

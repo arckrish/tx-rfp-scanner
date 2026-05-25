@@ -1,0 +1,821 @@
+{
+  "generated": "2026-05-25T18:31:51",
+  "window_days": 182,
+  "source": "Texas SmartBuy ESBD (via Public Bid Tracker mirror) + 2 city-portal record(s)",
+  "note": "ESBD covers state agencies + Texas SmartBuy member cities/counties. Other cities are pulled from their own portals via --portal-file adapters.",
+  "count": 27,
+  "portals": [
+    {
+      "name": "City of Dallas",
+      "type": "city",
+      "url": "https://dallascityhall.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "City of Fort Worth",
+      "type": "city",
+      "url": "https://fortworthtexas.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "City of Arlington",
+      "type": "city",
+      "url": "https://arlingtontx.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "City of Irving",
+      "type": "city",
+      "url": "https://cityofirving.ionwave.net/SourcingEvents.aspx?SourceType=1",
+      "platform": "Ionwave"
+    },
+    {
+      "name": "City of Garland",
+      "type": "city",
+      "url": "https://garlandtx.gov/Bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "City of Frisco",
+      "type": "city",
+      "url": "https://www.friscotexas.gov/883/Current-Bids",
+      "platform": ""
+    },
+    {
+      "name": "City of McKinney",
+      "type": "city",
+      "url": "https://mckinneytexas.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "City of Grand Prairie",
+      "type": "city",
+      "url": "https://vendors.planetbids.com/portal/53284/bo/bo-search",
+      "platform": "PlanetBids"
+    },
+    {
+      "name": "City of Mesquite",
+      "type": "city",
+      "url": "https://www.bidnetdirect.com/texas/cityofmesquite",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "City of Houston",
+      "type": "city",
+      "url": "https://www.beaconbid.com/solicitations/city-of-houston/open",
+      "platform": "BeaconBid"
+    },
+    {
+      "name": "City of Denton",
+      "type": "city",
+      "url": "https://dentoncounty.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "City of Carrollton",
+      "type": "city",
+      "url": "https://carrolltonbids.ionwave.net/SourcingEvents.aspx?SourceType=1",
+      "platform": "Ionwave"
+    },
+    {
+      "name": "City of Richardson",
+      "type": "city",
+      "url": "https://texasbids.net/government-agencies/dallas/richardson-city-of---purchasing-5404/",
+      "platform": "texasbids.net"
+    },
+    {
+      "name": "City of Lewisville",
+      "type": "city",
+      "url": "https://cityoflewisville.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "City of Allen",
+      "type": "city",
+      "url": "https://allentx.ionwave.net/SourcingEvents.aspx?SourceType=1",
+      "platform": "Ionwave"
+    },
+    {
+      "name": "City of Mansfield",
+      "type": "city",
+      "url": "https://www.mansfieldtexas.gov/Bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "City of Plano",
+      "type": "city",
+      "url": "https://planotx.ionwave.net/SourcingEvents.aspx?SourceType=1",
+      "platform": "Ionwave"
+    },
+    {
+      "name": "City of Grapevine",
+      "type": "city",
+      "url": "https://gpvine.ionwave.net/SourcingEvents.aspx?SourceType=1",
+      "platform": "Ionwave"
+    },
+    {
+      "name": "City of Rockwall",
+      "type": "city",
+      "url": "https://www.bidnetdirect.com/texas/rockwallcounty",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "City of Flower Mound",
+      "type": "city",
+      "url": "https://flower-mound.ionwave.net/SourcingEvents.aspx?SourceType=1",
+      "platform": "Ionwave"
+    },
+    {
+      "name": "City of Austin",
+      "type": "city",
+      "url": "https://financeonline.austintexas.gov/afo/account_services/solicitation/solicitations.cfm",
+      "platform": ""
+    },
+    {
+      "name": "City of Round Rock",
+      "type": "city",
+      "url": "https://roundrocktexas.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "City of Cedar Park",
+      "type": "city",
+      "url": "https://www.bidnetdirect.com/texas/city-of-cedar-park",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "City of Georgetown",
+      "type": "city",
+      "url": "https://www.demandstar.com/app/agencies/texas/city-of-georgetown-tx/procurement-opportunities/d9519efc-af40-4114-baaa-793a2fa6d9c6/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "City of Pflugerville",
+      "type": "city",
+      "url": "https://www.bidnetdirect.com/texas/city-of-pflugerville",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "City of San Marcos",
+      "type": "city",
+      "url": "https://www.bidnetdirect.com/texas/city-of-san-marcos/solicitations/open-bids?selectedContent=BUYER",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "City of Temple",
+      "type": "city",
+      "url": "https://templetx.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "City of Killeen",
+      "type": "city",
+      "url": "https://www.killeentexas.gov/Bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "City of Waco",
+      "type": "city",
+      "url": "https://www.demandstar.com/app/agencies/texas/city-of-waco/procurement-opportunities/bf086506-6436-487c-b2b2-bbf24334dbc7/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "City of College Station",
+      "type": "city",
+      "url": "https://brazosbid.ionwave.net/SourcingEvents.aspx?SourceType=1",
+      "platform": "Ionwave"
+    },
+    {
+      "name": "City of Bryan",
+      "type": "city",
+      "url": "https://brazosbid.ionwave.net/SourcingEvents.aspx?SourceType=1",
+      "platform": "Ionwave"
+    },
+    {
+      "name": "City of Pasadena",
+      "type": "city",
+      "url": "https://www.demandstar.com/app/agencies/texas/city-of-pasadena-tx/procurement-opportunities/7e6c203f-b625-4d69-af75-fc315fae70bf/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "City of Pearland",
+      "type": "city",
+      "url": "https://pearland.ionwave.net/SourcingEvents.aspx?SourceType=1",
+      "platform": "Ionwave"
+    },
+    {
+      "name": "City of Sugar Land",
+      "type": "city",
+      "url": "https://sugarlandtx.gov/290/Bid-Opportunities",
+      "platform": ""
+    },
+    {
+      "name": "City of Baytown",
+      "type": "city",
+      "url": "https://qcpi.questcdn.com/cdn/posting/?projType=all&provider=5074258&group=5074258",
+      "platform": "QuestCDN"
+    },
+    {
+      "name": "City of League City",
+      "type": "city",
+      "url": "https://leaguecitytx.gov/bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "City of Galveston",
+      "type": "city",
+      "url": "https://www.galvestontx.gov/Bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "City of Conroe",
+      "type": "city",
+      "url": "https://www.cityofconroe.org/departments/purchasing/current-proposal-bid-opportunities",
+      "platform": ""
+    },
+    {
+      "name": "City of Beaumont",
+      "type": "city",
+      "url": "https://www.demandstar.com/app/agencies/texas/city-of-beaumont-tx/procurement-opportunities/aa940ecd-e07d-4b83-b048-05e71f180931/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "City of New Braunfels",
+      "type": "city",
+      "url": "https://www.newbraunfels.gov/Bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "City of Schertz",
+      "type": "city",
+      "url": "https://schertz.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "City of Corpus Christi",
+      "type": "city",
+      "url": "https://www.cctexas.com/business/supplierportal",
+      "platform": ""
+    },
+    {
+      "name": "City of Laredo",
+      "type": "city",
+      "url": "https://www.demandstar.com/app/agencies/texas/city-of-laredo-tx/procurement-opportunities/523cdfc8-f9a8-4807-8de7-63a5888260b2/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "City of McAllen",
+      "type": "city",
+      "url": "https://mcallen.procureware.com/Bids",
+      "platform": "ProcureWare"
+    },
+    {
+      "name": "City of Brownsville",
+      "type": "city",
+      "url": "https://www.brownsvilletx.gov/Bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "City of Edinburg",
+      "type": "city",
+      "url": "https://procurement.opengov.com/portal/cityofedinburg",
+      "platform": "OpenGov"
+    },
+    {
+      "name": "City of Harlingen",
+      "type": "city",
+      "url": "https://harlingentx.gov/departments/finance/bid_opportunities.php",
+      "platform": ""
+    },
+    {
+      "name": "City of Victoria",
+      "type": "city",
+      "url": "https://www.bidnetdirect.com/texas/city-of-victoria",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "City of Midland",
+      "type": "city",
+      "url": "https://midlandtexas.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "City of Odessa",
+      "type": "city",
+      "url": "https://www.odessa-tx.gov/Bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "City of San Angelo",
+      "type": "city",
+      "url": "https://www.demandstar.com/app/agencies/texas/city-of-san-angelo/procurement-opportunities/e1f018ee-ebca-41d7-a3a6-a6ba4b19a824/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "City of Abilene",
+      "type": "city",
+      "url": "https://www.demandstar.com/app/agencies/texas/abilene-isd-ebid-system/procurement-opportunities/b37219a3-a24f-4d12-aba2-fdc7e4dc1dde/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "City of Lubbock",
+      "type": "city",
+      "url": "https://www.demandstar.com/app/agencies/texas/city-of-lubbock/procurement-opportunities/01c5b6bb-d972-447a-9747-2c892f2674d9/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "City of Amarillo",
+      "type": "city",
+      "url": "https://amarillo.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "City of Wichita Falls",
+      "type": "city",
+      "url": "http://wichitafallstx.gov/bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "City of Tyler",
+      "type": "city",
+      "url": "https://www.cityoftyler.org/government/departments/purchasing/vendor-bid-list",
+      "platform": ""
+    },
+    {
+      "name": "City of Longview",
+      "type": "city",
+      "url": "https://longviewtexas.gov/bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "City of Texarkana",
+      "type": "city",
+      "url": "https://www.texarkanatexas.gov/Bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "Dallas County",
+      "type": "county",
+      "url": "https://www.bidnetdirect.com/texas/dallas-county",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "Tarrant County",
+      "type": "county",
+      "url": "https://www.demandstar.com/app/agencies/texas/tarrant-county-tx/procurement-opportunities/f061d8da-e115-4aee-9f04-6a70976f6af8/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "Collin County",
+      "type": "county",
+      "url": "https://www.demandstar.com/app/agencies/texas/collin-county-tx/procurement-opportunities/625b0841-af0b-405b-9946-a5bffff4fb55/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "Denton County",
+      "type": "county",
+      "url": "https://www.demandstar.com/app/agencies/texas/city-of-denton-tx/procurement-opportunities/0a89e995-3629-4d6b-8480-d1b33130be1f/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "Ellis County",
+      "type": "county",
+      "url": "https://www.demandstar.com/app/agencies/texas/county-of-ellis/procurement-opportunities/1bb90638-4be6-4cd5-88a3-4706955f30a6/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "Johnson County",
+      "type": "county",
+      "url": "https://www.demandstar.com/app/agencies/kansas/johnson-county-ks/procurement-opportunities/f6091745-68d0-40d7-8460-c6ae2832297c/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "Parker County",
+      "type": "county",
+      "url": "https://www.demandstar.com/app/agencies/texas/parker-county-tx/procurement-opportunities/e4a90252-dddb-4554-b4cc-f33865990ea2/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "Rockwall County",
+      "type": "county",
+      "url": "https://www.bidnetdirect.com/texas/rockwallcounty",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "Travis County",
+      "type": "county",
+      "url": "https://www.bidnetdirect.com/texas/traviscounty",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "Williamson County",
+      "type": "county",
+      "url": "https://www.demandstar.com/app/agencies/texas/county-of-williamson/procurement-opportunities/b64215b9-9729-44eb-902e-541bb5422192/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "Hays County",
+      "type": "county",
+      "url": "https://www.bidnetdirect.com/texas/hayscounty",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "Bell County",
+      "type": "county",
+      "url": "https://texasbids.net/government-agencies/bell/bell-county-of-804814/",
+      "platform": "texasbids.net"
+    },
+    {
+      "name": "McLennan County",
+      "type": "county",
+      "url": "https://www.demandstar.com/app/agencies/texas/mclennan-county/procurement-opportunities/d7388ddd-0d23-47b8-a8ef-2626498b35f2/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "Brazos County",
+      "type": "county",
+      "url": "https://www.brazoscountytx.gov/Bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "Fort Bend County",
+      "type": "county",
+      "url": "https://fortbendcountytx.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "Montgomery County",
+      "type": "county",
+      "url": "https://www.montgomerytexas.gov/rfps?field_bid_rfp_status_value_1=All",
+      "platform": ""
+    },
+    {
+      "name": "Brazoria County",
+      "type": "county",
+      "url": "https://brazoriacounty.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "Galveston County",
+      "type": "county",
+      "url": "https://www.demandstar.com/app/agencies/texas/county-of-galveston/procurement-opportunities/84f217a1-94de-4986-947a-6c7c21cdd440/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "Jefferson County",
+      "type": "county",
+      "url": "https://texasbids.net/government-agencies/jefferson/",
+      "platform": "texasbids.net"
+    },
+    {
+      "name": "Guadalupe County",
+      "type": "county",
+      "url": "https://www.bidnetdirect.com/texas/guadalupecounty",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "Nueces County",
+      "type": "county",
+      "url": "https://www.nuecesco.com/county-services/purchasing/bids",
+      "platform": ""
+    },
+    {
+      "name": "Hidalgo County",
+      "type": "county",
+      "url": "https://www.hidalgocounty.us/bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "Cameron County",
+      "type": "county",
+      "url": "https://www.bidnetdirect.com/texas/cameron-county",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "Webb County",
+      "type": "county",
+      "url": "https://www.demandstar.com/app/agencies/texas/ebid-webb-county/procurement-opportunities/f218f32f-f0c6-4f46-8693-d2af2c64c286/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "Comal County",
+      "type": "county",
+      "url": "https://www.bidnetdirect.com/texas/comalcounty",
+      "platform": "BidNet Direct"
+    },
+    {
+      "name": "Midland County",
+      "type": "county",
+      "url": "https://midlandtexas.bonfirehub.com/portal/?tab=openOpportunities",
+      "platform": "Bonfire"
+    },
+    {
+      "name": "Ector County",
+      "type": "county",
+      "url": "https://procurement.opengov.com/portal/ectorcountytx",
+      "platform": "OpenGov"
+    },
+    {
+      "name": "Tom Green County",
+      "type": "county",
+      "url": "https://www.beaconbid.com/solicitations/tom-green-county-tx/open",
+      "platform": "BeaconBid"
+    },
+    {
+      "name": "Taylor County",
+      "type": "county",
+      "url": "https://www.taylorcounty.texas.gov/Bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "Potter County",
+      "type": "county",
+      "url": "https://www.demandstar.com/app/agencies/texas/county-of-potter/procurement-opportunities/fe805e9c-62b9-4b0e-a201-92111744224c/",
+      "platform": "DemandStar"
+    },
+    {
+      "name": "Smith County",
+      "type": "county",
+      "url": "https://www.smith-county.com/Bids.aspx",
+      "platform": ""
+    },
+    {
+      "name": "Gregg County",
+      "type": "county",
+      "url": "https://greggcounty.texas.gov/departments/purchasing/bids-addendums",
+      "platform": ""
+    }
+  ],
+  "records": [
+    {
+      "bid": "601290000033483",
+      "title": "Traffic signal controller parts",
+      "category": "Traffic Signals",
+      "entity": "Texas Department of Transportation (TxDOT)",
+      "entityType": "state",
+      "due": "2026-05-26",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "601340000065291",
+      "title": "Autoscope Vision Sensors and Comm Managers",
+      "category": "ITS / Detection",
+      "entity": "Texas Department of Transportation (TxDOT)",
+      "entityType": "state",
+      "due": "2026-05-26",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "05-26-S64-513",
+      "title": "MCALLEN ACTIVE TRANSPORTATION PLAN (ATP)",
+      "category": "Active Transportation",
+      "entity": "City of McAllen",
+      "entityType": "city",
+      "due": "2026-05-26",
+      "source": "ProcureWare portal",
+      "url": "/Bids/af213cec-8b29-4c90-94ef-2e048f1cf71f"
+    },
+    {
+      "bid": "05-26-S65-513",
+      "title": "MCALLEN INTELLIGENT TRANSPORTATION SYTEMS (ITS) MASTER PLAN",
+      "category": "ITS / Detection",
+      "entity": "City of McAllen",
+      "entityType": "city",
+      "due": "2026-05-26",
+      "source": "ProcureWare portal",
+      "url": "/Bids/f6de657d-b91e-483b-b7ca-6f2f8ccc35a0"
+    },
+    {
+      "bid": "6503-19-001_0526",
+      "title": "LOCAL LET MAINTENANCE CONTRACT, COLLIN CO, TRAFFIC CONTROL SERVICES",
+      "category": "Traffic Control",
+      "entity": "Texas Department of Transportation (TxDOT)",
+      "entityType": "state",
+      "due": "2026-05-28",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "601340000065543",
+      "title": "Nema Traffic Signal Cabinet Assembly with Econolite Cobalt Controller",
+      "category": "Traffic Signals",
+      "entity": "Texas Department of Transportation (TxDOT)",
+      "entityType": "state",
+      "due": "2026-05-29",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "Request For Qualifications-RFQ 2026-006 Webb Count",
+      "title": "RFQ 2026-006 Webb County Roadway Speed Study",
+      "category": "Traffic Studies",
+      "entity": "Webb County",
+      "entityType": "county",
+      "due": "2026-05-29",
+      "source": "DemandStar portal",
+      "url": "https://www.demandstar.com/app/limited/bids/532190/details"
+    },
+    {
+      "bid": "601290000033436",
+      "title": "Traffic Signal Controllers",
+      "category": "Traffic Signals",
+      "entity": "Texas Department of Transportation (TxDOT)",
+      "entityType": "state",
+      "due": "2026-06-01",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "601310000101484",
+      "title": "Wavetronix SmartSensors",
+      "category": "ITS / Detection",
+      "entity": "Texas Department of Transportation (TxDOT)",
+      "entityType": "state",
+      "due": "2026-06-03",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "754-TXST-2026-RFP-4772-UPD",
+      "title": "Game Day Traffic Management and Pedestrian Safety Services",
+      "category": "Traffic Management",
+      "entity": "State agency 754",
+      "entityType": "state",
+      "due": "2026-06-03",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "717-26-754",
+      "title": "Sidewalk Replacement Project",
+      "category": "Active Transportation",
+      "entity": "State agency 717",
+      "entityType": "state",
+      "due": "2026-06-04",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "6497-64-001_0626",
+      "title": "LOCAL LET MAINTENANCE CONTRACT, EL PASO CO, PAVEMENT MARKINGS",
+      "category": "Signing & Marking",
+      "entity": "Texas Department of Transportation (TxDOT)",
+      "entityType": "state",
+      "due": "2026-06-04",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "2026-057",
+      "title": "2026-057 General Engineering Services 2026 RFQ",
+      "category": "Traffic Engineering",
+      "entity": "Texas SmartBuy member M1050 (local government)",
+      "entityType": "city",
+      "due": "2026-06-04",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "2026-057",
+      "title": "2026-057 On-Call General Engineering Services 2026 RFQ",
+      "category": "Traffic Engineering",
+      "entity": "City of San Marcos",
+      "entityType": "city",
+      "due": "2026-06-04",
+      "source": "BidNet Direct portal",
+      "url": "/texas/solicitations/open-bids/2026-057-On-Call-General-Engineering-Services-2026-RFQ/0000422869?purchasingGroupId=8407551&origin=2"
+    },
+    {
+      "bid": "26004669",
+      "title": "26004669 Z26-01 Wayfinding Signs- Phase 1",
+      "category": "Signing & Marking",
+      "entity": "City of Midland",
+      "entityType": "city",
+      "due": "2026-06-04",
+      "source": "Bonfire portal",
+      "url": "/opportunities/236261"
+    },
+    {
+      "bid": "26004669",
+      "title": "26004669 Z26-01 Wayfinding Signs- Phase 1",
+      "category": "Signing & Marking",
+      "entity": "Midland County",
+      "entityType": "county",
+      "due": "2026-06-04",
+      "source": "Bonfire portal",
+      "url": "/opportunities/236261"
+    },
+    {
+      "bid": "601440000053090",
+      "title": "Traffic Signal Control Cabinets",
+      "category": "Traffic Signals",
+      "entity": "Texas Department of Transportation (TxDOT)",
+      "entityType": "state",
+      "due": "2026-06-05",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "601440000051779",
+      "title": "Statewide Traffic Analysis and Reporting System II (STARS II)",
+      "category": "Traffic Studies",
+      "entity": "Texas Department of Transportation (TxDOT)",
+      "entityType": "state",
+      "due": "2026-06-08",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "2605-001",
+      "title": "AI-Powered Predictive Analytics & Clinical Decision Support Platform for Emergency Department Utilization and Preventable Readmissions Reduction",
+      "category": "Emerging Tech & AI",
+      "entity": "State agency B0006",
+      "entityType": "state",
+      "due": "2026-06-08",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "ITB #26-075",
+      "title": "Traffic Pavement Striping & Marking Services",
+      "category": "Signing & Marking",
+      "entity": "City of College Station",
+      "entityType": "city",
+      "due": "2026-06-09",
+      "source": "Ionwave portal",
+      "url": "https://brazosbid.ionwave.net/SourcingEvents.aspx?SourceType=1"
+    },
+    {
+      "bid": "ITB #26-075",
+      "title": "Traffic Pavement Striping & Marking Services",
+      "category": "Signing & Marking",
+      "entity": "City of Bryan",
+      "entityType": "city",
+      "due": "2026-06-09",
+      "source": "Ionwave portal",
+      "url": "https://brazosbid.ionwave.net/SourcingEvents.aspx?SourceType=1"
+    },
+    {
+      "bid": "601340000066261",
+      "title": "Thermoplastic Pavement Marking Tape for TxDOT Amarillo",
+      "category": "Signing & Marking",
+      "entity": "Texas Department of Transportation (TxDOT)",
+      "entityType": "state",
+      "due": "2026-06-10",
+      "source": "Texas SmartBuy / ESBD",
+      "url": "https://www.txsmartbuy.gov/esbd"
+    },
+    {
+      "bid": "CIZ26-TPW-4001",
+      "title": "Bond Traffic Signal Construction \u2013 Group 5 \u2013 Mountain Creek Parkway at Fox Creek Trail, Lake June Road at Houghton Road, and Knox Street at Katy Trail",
+      "category": "Traffic Signals",
+      "entity": "City of Dallas",
+      "entityType": "city",
+      "due": "2026-06-12",
+      "source": "Bonfire portal",
+      "url": "/opportunities/232909"
+    },
+    {
+      "bid": "Request for Proposal-2026-003",
+      "title": "2026 LiDAR Data Collection",
+      "category": "Emerging Tech & AI",
+      "entity": "Johnson County",
+      "entityType": "county",
+      "due": "2026-06-12",
+      "source": "DemandStar portal",
+      "url": "https://www.demandstar.com/app/limited/bids/533342/details"
+    },
+    {
+      "bid": "Bid #34-06-26",
+      "title": "Hartrick Bluff Reconstruction (From FM 93 to Waters Dairy Rd) FM 93 IMP & Traffic Signalization",
+      "category": "Traffic Signals",
+      "entity": "City of Temple",
+      "entityType": "city",
+      "due": "2026-06-16",
+      "source": "Bonfire portal",
+      "url": "/opportunities/235271"
+    },
+    {
+      "bid": "CSP 26-073",
+      "title": "Jones Butler eXTENSION & Roundabout",
+      "category": "Traffic Control",
+      "entity": "City of College Station",
+      "entityType": "city",
+      "due": "2026-06-24",
+      "source": "Ionwave portal",
+      "url": "https://brazosbid.ionwave.net/SourcingEvents.aspx?SourceType=1"
+    },
+    {
+      "bid": "CSP 26-073",
+      "title": "Jones Butler eXTENSION & Roundabout",
+      "category": "Traffic Control",
+      "entity": "City of Bryan",
+      "entityType": "city",
+      "due": "2026-06-24",
+      "source": "Ionwave portal",
+      "url": "https://brazosbid.ionwave.net/SourcingEvents.aspx?SourceType=1"
+    }
+  ]
+}

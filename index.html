@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Texas Procurement Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,400;0,600;0,800;0,900;1,600&family=Overpass+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+  :root{
+    --asphalt:#16181a;--asphalt2:#1d2023;--panel:#212529;--line:#33383d;
+    --hwy:#0c5c3d;--hwy-lt:#15824f;--sig:#f5c518;--ink:#ecebe6;
+    --mut:#8b9189;--mut2:#6a7068;
+    --city:#4ea3d6;--county:#c98be0;--state:#f5c518;--mpo:#56c596;
+    --transit:#e0617a;--transport:#ff8b3d;--aggregator:#f5c518;
+    --warn:#e0617a;--ok:#56c596;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--asphalt);color:var(--ink);
+    font-family:'Overpass',Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit}::selection{background:var(--sig);color:#000}
+  .mono{font-family:'Overpass Mono',ui-monospace,monospace}
+  .hazard{height:8px;background:repeating-linear-gradient(135deg,
+     var(--sig) 0 16px,#101113 16px 32px)}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 30px}
+
+  header{padding:24px 30px 0;background:
+      radial-gradient(900px 200px at 12% -40%,rgba(21,130,79,.28),transparent),
+      var(--asphalt2)}
+  .badge-sign{display:inline-flex;align-items:center;gap:13px;background:var(--hwy);
+    border:3px solid #fff;border-radius:9px;padding:11px 17px;
+    box-shadow:0 0 0 3px var(--hwy),0 8px 24px rgba(0,0,0,.5)}
+  .signal{display:flex;flex-direction:column;gap:4px;background:#0c0d0e;
+    padding:6px;border-radius:5px;border:1px solid #2a2d30}
+  .dot{width:12px;height:12px;border-radius:50%}
+  .dot.r{background:#e0617a;box-shadow:0 0 9px #e0617a}
+  .dot.y{background:var(--sig);box-shadow:0 0 9px var(--sig)}
+  .dot.g{background:#3fae6e;box-shadow:0 0 9px #3fae6e}
+  .badge-sign h1{font-size:23px;font-weight:900;letter-spacing:.5px;color:#fff;line-height:1}
+  .badge-sign .sub{font-size:10.5px;font-weight:700;letter-spacing:2.5px;
+    color:#bfe6d2;margin-top:5px}
+
+  /* tabs */
+  .tabs{display:flex;gap:4px;margin-top:20px}
+  .tab{padding:13px 22px;background:var(--asphalt);border:1px solid var(--line);
+    border-bottom:none;border-radius:9px 9px 0 0;color:var(--mut);font-weight:800;
+    font-size:13px;cursor:pointer;font-family:inherit;letter-spacing:.3px;
+    transition:.12s}
+  .tab:hover{color:var(--ink)}
+  .tab.on{background:var(--panel);color:var(--sig);
+    border-color:var(--line);box-shadow:0 -3px 0 var(--hwy-lt) inset}
+  .tabwrap{border-top:1px solid var(--line)}
+
+  .panel{display:none;padding-top:22px;padding-bottom:40px}
+  .panel.on{display:block}
+
+  /* provenance banner */
+  .banner{background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.32);
+    border-radius:9px;padding:13px 16px;font-size:12px;color:var(--mut);
+    line-height:1.6;margin-bottom:18px}
+  .banner b{color:var(--sig);font-weight:700}
+  .banner .tag{font-family:'Overpass Mono',monospace;font-size:10px;
+    background:var(--sig);color:#1a1400;font-weight:700;padding:2px 7px;
+    border-radius:4px;letter-spacing:.5px}
+
+  /* controls */
+  .ctlrow{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
+  .ctlbox{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;flex:1;min-width:250px;position:relative;overflow:hidden}
+  .ctlbox::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+    background:var(--hwy-lt)}
+  .ctl-label{font-family:'Overpass Mono',monospace;font-size:10.5px;font-weight:700;
+    letter-spacing:2px;color:var(--sig);text-transform:uppercase;margin-bottom:11px}
+  .pills{display:flex;flex-wrap:wrap;gap:7px}
+  .pill{padding:8px 13px;border:1px solid var(--line);border-radius:7px;
+    background:var(--asphalt);color:var(--mut);font-size:12px;font-weight:700;
+    cursor:pointer;transition:.12s;font-family:inherit}
+  .pill:hover{border-color:var(--hwy-lt);color:var(--ink)}
+  .pill.on{background:var(--hwy);border-color:var(--hwy-lt);color:#fff}
+  .kw{padding:6px 11px;border:1px solid var(--line);border-radius:20px;
+    background:var(--asphalt);color:var(--mut);font-size:11px;font-weight:600;
+    cursor:pointer;transition:.12s;font-family:inherit}
+  .kw:hover{color:var(--ink);border-color:var(--mut2)}
+  .kw.on{background:rgba(245,197,24,.13);border-color:var(--sig);color:var(--sig)}
+  .kw.on::before{content:"\2713 ";font-weight:800}
+  .toggle{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;
+    font-size:12px;color:var(--mut);font-weight:700}
+  .toggle input{width:16px;height:16px;accent-color:var(--sig)}
+  .rangerow{display:flex;align-items:center;gap:7px;margin-top:10px;flex-wrap:wrap;
+    font-size:11px;color:var(--mut)}
+  .rangerow input[type=date]{background:var(--asphalt);border:1px solid var(--line);
+    color:var(--ink);padding:6px 8px;border-radius:6px;
+    font-family:'Overpass Mono',monospace;font-size:11px;color-scheme:dark}
+  .rangerow input[type=date]:focus{outline:none;border-color:var(--hwy-lt)}
+  .rangerow.active input[type=date]{border-color:var(--sig)}
+  .rangerow .rlbl{font-family:'Overpass Mono',monospace;font-weight:700;
+    letter-spacing:.5px}
+  .rangerow .rclr{color:var(--sig);font-weight:700;cursor:pointer;
+    text-decoration:underline;font-size:10.5px}
+  .kwinput{width:100%;margin-top:9px;background:var(--asphalt);
+    border:1px solid var(--line);color:var(--ink);padding:8px 10px;
+    border-radius:6px;font-family:'Overpass Mono',monospace;font-size:11px}
+  .kwinput:focus{outline:none;border-color:var(--hwy-lt)}
+  .kwinput::placeholder{color:var(--mut2)}
+  .jpbox{background:linear-gradient(145deg,rgba(245,197,24,.09),
+     rgba(12,92,61,.10));border:1px solid var(--sig);border-radius:11px;
+    padding:16px 18px;margin-bottom:18px}
+  .jp-label{font-family:'Overpass Mono',monospace;font-size:11px;font-weight:700;
+    letter-spacing:2px;color:var(--sig);text-transform:uppercase;margin-bottom:4px}
+  .jp-sub{font-size:11.5px;color:var(--mut);margin-bottom:11px;line-height:1.55}
+  .jp-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  .jp-select{flex:1;min-width:220px;background:var(--asphalt);
+    border:1px solid var(--line);color:var(--ink);padding:11px 12px;
+    border-radius:8px;font-family:'Overpass',sans-serif;font-size:13px;
+    font-weight:600;color-scheme:dark}
+  .jp-select:focus{outline:none;border-color:var(--sig)}
+  .jp-result{margin-top:13px}
+  .jp-card{background:var(--panel);border:1px solid var(--line);
+    border-radius:9px;padding:13px 15px}
+  .jp-cardtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    margin-bottom:9px}
+  .jp-cardname{font-weight:800;font-size:14px}
+  .jp-pill{font-family:'Overpass Mono',monospace;font-size:9px;font-weight:700;
+    letter-spacing:1px;padding:3px 8px;border-radius:4px}
+  .jp-pill.verified{background:rgba(86,197,150,.16);color:var(--ok)}
+  .jp-pill.search{background:rgba(245,197,24,.16);color:var(--sig)}
+  .jp-urlrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .jp-url{flex:1;min-width:220px;background:var(--asphalt);
+    border:1px solid var(--line);color:var(--hwy-lt);padding:9px 11px;
+    border-radius:6px;font-family:'Overpass Mono',monospace;font-size:11px}
+  .jp-mini{padding:9px 13px;border-radius:6px;font-size:11px;font-weight:800;
+    font-family:'Overpass',sans-serif;cursor:pointer;text-decoration:none;
+    border:1px solid var(--line);background:var(--asphalt);color:var(--mut)}
+  .jp-mini:hover{color:var(--ink);border-color:var(--mut2)}
+  .jp-mini.go{background:var(--hwy);color:#fff;border-color:var(--hwy-lt)}
+  .jp-mini.go:hover{background:var(--hwy-lt)}
+  .jp-hint{font-size:10.5px;color:var(--mut2);margin-top:8px;line-height:1.5}
+  .jp-pill.indata{background:rgba(86,197,150,.16);color:var(--ok)}
+  .jp-pill.nodata{background:rgba(139,145,137,.16);color:var(--mut)}
+  .jp-mini.list{background:rgba(245,197,24,.13);border-color:var(--sig);
+    color:var(--sig)}
+  .jp-mini.list:hover{background:rgba(245,197,24,.22);color:var(--sig)}
+  .jp-bidsbox{margin-top:14px}
+  .jp-bidshead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+    margin-bottom:11px}
+  .jp-bidstitle{font-family:'Overpass Mono',monospace;font-size:11px;font-weight:700;
+    letter-spacing:2px;color:var(--sig);text-transform:uppercase}
+  .jp-bidsmeta{font-family:'Overpass Mono',monospace;font-size:10.5px;color:var(--mut)}
+  .jp-bidsempty{background:var(--panel);border:1px dashed var(--line);
+    border-radius:9px;padding:22px 18px;font-size:12px;color:var(--mut);
+    line-height:1.75;text-align:center}
+  .jp-bidsempty b{color:var(--ink);font-weight:700}
+
+  .runbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    background:var(--asphalt2);border:1px solid var(--line);border-radius:10px;
+    padding:13px 17px;margin-bottom:20px}
+  .stat{font-family:'Overpass Mono',monospace;font-size:12px;color:var(--mut)}
+  .stat .big{color:var(--sig);font-size:20px;font-weight:700}
+  .spacer{flex:1}
+  .btn{font-family:'Overpass',sans-serif;font-weight:800;cursor:pointer;border:none;
+    border-radius:8px;letter-spacing:.3px;transition:.13s;display:inline-flex;
+    align-items:center;gap:7px}
+  .btn-pdf{background:var(--sig);color:#1a1400;padding:12px 20px;font-size:13px}
+  .btn-pdf:hover{background:#ffd633;transform:translateY(-1px)}
+  .btn-pdf:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  .btn-ghost{background:transparent;color:var(--mut);border:1px solid var(--line);
+    padding:10px 14px;font-size:11.5px;font-weight:700}
+  .btn-ghost:hover{color:var(--ink);border-color:var(--mut2)}
+
+  /* entity group */
+  .egroup{margin-bottom:20px;border:1px solid var(--line);border-radius:10px;
+    overflow:hidden;background:var(--panel)}
+  .ehead{display:flex;align-items:center;gap:11px;padding:12px 16px;
+    background:var(--asphalt2);border-bottom:1px solid var(--line)}
+  .etype{font-family:'Overpass Mono',monospace;font-size:9px;font-weight:700;
+    letter-spacing:1px;padding:3px 8px;border-radius:4px;text-transform:uppercase}
+  .et-city{background:rgba(78,163,214,.16);color:var(--city)}
+  .et-county{background:rgba(201,139,224,.16);color:var(--county)}
+  .et-state{background:rgba(245,197,24,.16);color:var(--state)}
+  .et-mpo{background:rgba(86,197,150,.16);color:var(--mpo)}
+  .et-transit{background:rgba(224,97,122,.16);color:var(--transit)}
+  .ename{font-weight:800;font-size:15px}
+  .ecount{font-family:'Overpass Mono',monospace;font-size:11px;color:var(--mut2)}
+  .row{display:flex;align-items:flex-start;gap:14px;padding:12px 16px;
+    border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .row:hover{background:var(--asphalt2)}
+  .rbid{font-family:'Overpass Mono',monospace;font-size:10.5px;color:var(--mut2);
+    width:130px;flex-shrink:0;word-break:break-all;padding-top:2px}
+  .rmain{flex:1;min-width:0}
+  .rtitle{font-size:13.5px;font-weight:700;line-height:1.35}
+  .rcat{display:inline-block;font-family:'Overpass Mono',monospace;font-size:9.5px;
+    font-weight:700;color:var(--hwy-lt);background:rgba(21,130,79,.14);
+    padding:2px 7px;border-radius:4px;margin-top:5px;letter-spacing:.5px}
+  .rright{text-align:right;flex-shrink:0;width:128px}
+  .rdue{font-family:'Overpass Mono',monospace;font-size:11px;color:var(--mut)}
+  .rbadge{display:inline-block;font-family:'Overpass Mono',monospace;font-size:9.5px;
+    font-weight:700;padding:3px 8px;border-radius:4px;margin-top:5px}
+  .bg-open{background:rgba(86,197,150,.16);color:var(--ok)}
+  .bg-soon{background:rgba(245,197,24,.16);color:var(--sig)}
+  .bg-closed{background:rgba(224,97,122,.16);color:var(--warn)}
+  .rlink{display:inline-block;margin-top:6px;font-size:10.5px;font-weight:800;
+    color:var(--hwy-lt);text-decoration:none}
+  .rlink:hover{color:var(--ok)}
+
+  .empty{text-align:center;color:var(--mut2);padding:46px 20px;
+    font-family:'Overpass Mono',monospace;font-size:13px;line-height:1.7}
+
+  /* directory cards (tab 2) */
+  .sectiontitle{font-family:'Overpass Mono',monospace;font-size:11px;letter-spacing:2px;
+    color:var(--mut2);text-transform:uppercase;margin:20px 0 11px;display:flex;
+    align-items:center;gap:12px}
+  .sectiontitle::after{content:"";flex:1;height:1px;background:var(--line)}
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  .dcard{background:var(--panel);border:1px solid var(--line);border-radius:9px;
+    padding:14px 15px;border-left:4px solid var(--mut2)}
+  .dcard.k-city{border-left-color:var(--city)}
+  .dcard.k-county{border-left-color:var(--county)}
+  .dcard.k-aggregator{border-left-color:var(--aggregator)}
+  .dcard.k-transport{border-left-color:var(--transport)}
+  .dcard.k-mpo{border-left-color:var(--mpo)}
+  .dcard.k-transit{border-left-color:var(--transit)}
+  .dtop{display:flex;justify-content:space-between;gap:9px;align-items:flex-start}
+  .dname{font-weight:800;font-size:13.5px;line-height:1.25}
+  .dnote{font-size:11px;color:var(--mut);margin-top:7px;line-height:1.5}
+  .dactions{display:flex;gap:6px;margin-top:10px}
+  .act{flex:1;text-align:center;padding:8px 5px;border-radius:6px;font-size:10.5px;
+    font-weight:800;text-decoration:none;font-family:inherit;cursor:pointer;
+    border:1px solid transparent}
+  .act-s{background:var(--hwy);color:#fff}.act-s:hover{background:var(--hwy-lt)}
+  .act-p{background:var(--asphalt);color:var(--mut);border-color:var(--line)}
+  .act-p:hover{color:var(--ink)}
+  .filterbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:6px 0 4px}
+  .fchip{padding:7px 12px;border:1px solid var(--line);border-radius:7px;
+    background:var(--asphalt2);color:var(--mut);font-size:11px;font-weight:700;
+    cursor:pointer;font-family:inherit}
+  .fchip.on{background:var(--ink);color:#16181a;border-color:var(--ink)}
+  .search-in{flex:1;min-width:160px;background:var(--asphalt2);border:1px solid
+    var(--line);color:var(--ink);padding:9px 12px;border-radius:7px;
+    font-family:'Overpass Mono',monospace;font-size:12px}
+
+  footer{border-top:1px solid var(--line);margin-top:10px;padding:20px 30px;
+    background:var(--asphalt2)}
+  .disc{max-width:1240px;margin:0 auto;font-size:11px;color:var(--mut2);line-height:1.65}
+  .disc b{color:var(--mut)}
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120px);
+    background:var(--sig);color:#1a1400;font-weight:800;padding:12px 21px;
+    border-radius:9px;font-size:13px;transition:.3s;box-shadow:0 12px 30px rgba(0,0,0,.5);
+    z-index:50}
+  #toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="hazard"></div>
+
+<header>
+  <div class="wrap">
+    <div class="badge-sign">
+      <div class="signal"><div class="dot r"></div><div class="dot y"></div>
+        <div class="dot g"></div></div>
+      <div><h1>Texas Procurement Portal</h1>
+        <div class="sub">OPEN PROCUREMENTS &middot; TRAFFIC / ITS / SIGNAL TIMING</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab on" data-tab="results">Open Procurements</div>
+      <div class="tab" data-tab="directory">Portal Directory &amp; Search</div>
+    </div>
+  </div>
+</header>
+
+<div class="tabwrap"><div class="wrap">
+
+<!-- ============ TAB 1: RESULTS ============ -->
+<div class="panel on" id="panel-results">
+
+  <div class="banner">
+    <span class="tag">DATA SOURCE</span>&nbsp;
+    Listings below come from the <b>Texas SmartBuy / ESBD</b> feed &mdash; the only
+    statewide machine-readable solicitation source. It covers <b>state agencies plus
+    Texas SmartBuy member cities/counties</b>; it is <b>not</b> every Texas
+    municipality. Embedded data is an ESBD snapshot captured <b>May 22, 2026</b>.
+    To refresh: run <b>tx_rfp_scraper.py</b> and load the resulting
+    <b>rfp_data.json</b> below. For cities that post on their own portals
+    (BidNet / DemandStar / Bonfire / Ionwave), use the <b>Portal Directory</b> tab.
+  </div>
+
+  <div class="ctlrow">
+    <div class="ctlbox">
+      <div class="ctl-label">Closing within</div>
+      <div class="pills" id="r-windows"></div>
+      <div class="rangerow" id="r-rangerow">
+        <span class="rlbl">OR RANGE</span>
+        <input type="date" id="r-from" title="closing on/after">
+        <span>to</span>
+        <input type="date" id="r-to" title="closing on/before">
+        <span class="rclr" id="r-rangeclear">clear</span>
+      </div>
+    </div>
+    <div class="ctlbox">
+      <div class="ctl-label">Traffic category &amp; keyword</div>
+      <div class="pills" id="r-cats"></div>
+      <input class="kwinput" id="r-kw" type="text"
+        placeholder="filter listings by keyword in title (e.g. roundabout, fiber)">
+    </div>
+    <div class="ctlbox" style="flex:0 0 230px">
+      <div class="ctl-label">Data</div>
+      <label class="toggle" style="margin-bottom:10px">
+        <input type="checkbox" id="r-closed"> show closed solicitations</label>
+      <button class="btn btn-ghost" id="r-load">&#128193; Load rfp_data.json</button>
+      <input type="file" id="r-file" accept=".json" style="display:none">
+    </div>
+  </div>
+
+  <div class="runbar">
+    <div class="stat"><span class="big" id="r-count">0</span> open procurements</div>
+    <div class="stat">|&nbsp;&nbsp;across <span class="big" id="r-ents" style="font-size:15px">0</span> entities</div>
+    <div class="stat" id="r-asof"></div>
+    <div class="spacer"></div>
+    <button class="btn btn-pdf" id="r-pdf">&#11015; Export Procurements PDF</button>
+  </div>
+
+  <div id="r-results"></div>
+</div>
+
+<!-- ============ TAB 2: DIRECTORY ============ -->
+<div class="panel" id="panel-directory">
+
+  <div class="banner">
+    <span class="tag">PORTAL DIRECTORY</span>&nbsp;
+    A directory of <b>official bid portals</b> for Texas cities, counties, MPOs
+    and state agencies. Pick a jurisdiction below to <b>list its open
+    procurements on screen</b> (from the loaded Texas SmartBuy / ESBD dataset)
+    and jump straight to its official portal for the rest. Browse the cards or
+    export the whole directory as a PDF. Every link goes to a real procurement
+    portal &mdash; no web searches.
+  </div>
+
+  <div class="jpbox">
+    <div class="jp-label">&#9656; Select a jurisdiction &mdash; list open bids</div>
+    <div class="jp-sub">Pick any city, county or organization to <b>list its open
+      procurements right here on screen</b> (from the loaded ESBD dataset, just
+      like the Open Procurements tab) &mdash; and open its <b>official portal</b>
+      for any bids posted only there.</div>
+    <div class="jp-row">
+      <select class="jp-select" id="jp-select"></select>
+      <button class="jp-mini go" id="jp-go" style="padding:11px 18px;font-size:12.5px">
+        &#127760; Open official portal &#9656;</button>
+    </div>
+    <div class="jp-result" id="jp-result"></div>
+  </div>
+
+  <div class="runbar">
+    <div class="stat"><span class="big" id="d-count">0</span> bid portals</div>
+    <div class="stat">|&nbsp;&nbsp;<span class="big" id="d-sel" style="font-size:15px">0</span> selected</div>
+    <div class="spacer"></div>
+    <button class="btn btn-ghost" id="d-all">Select all</button>
+    <button class="btn btn-ghost" id="d-none">Clear</button>
+    <button class="btn btn-pdf" id="d-pdf">&#11015; Export Portal Directory</button>
+  </div>
+
+  <div class="filterbar">
+    <div class="fchip on" data-f="all">All</div>
+    <div class="fchip" data-f="aggregator">Aggregators</div>
+    <div class="fchip" data-f="transport">State / TxDOT</div>
+    <div class="fchip" data-f="mpo">MPO / COG</div>
+    <div class="fchip" data-f="transit">Transit</div>
+    <div class="fchip" data-f="city">Cities</div>
+    <div class="fchip" data-f="county">Counties</div>
+    <input class="search-in" id="d-filter" placeholder="filter by name or region...">
+  </div>
+
+  <div id="d-results"></div>
+</div>
+
+</div></div>
+
+<footer><div class="disc">
+  <b>Honest scope.</b> No public API lists every traffic/ITS/signal RFP across all
+  ~1,200 Texas cities and 254 counties &mdash; that consolidated dataset does not
+  exist. The Open Procurements tab shows the real, verifiable Texas SmartBuy/ESBD
+  feed (state agencies + SmartBuy-member locals). The Portal Directory tab routes
+  you to every other jurisdiction's official portal with the right filters
+  pre-built. Always confirm scope, addenda and deadlines on the issuing agency's
+  portal before bidding. Portal URLs verified May 2026.
+</div></footer>
+<div id="toast"></div>
+
+<script>
+/* ===================== EMBEDDED REAL DATA ===================== */
+/* Texas SmartBuy / ESBD snapshot captured 2026-05-22 (traffic-relevant). */
+const SEED={
+ generated:'2026-05-22T12:35:00',
+ window_days:182,
+ source:'Texas SmartBuy ESBD (snapshot 2026-05-22)',
+ records:[
+  {bid:'601290000033483',title:'Traffic signal controller parts',
+   category:'Traffic Signals',entity:'Texas Department of Transportation (TxDOT)',
+   entityType:'state',due:'2026-05-26',source:'ESBD',
+   url:'https://www.txsmartbuy.gov/esbd'},
+  {bid:'601340000065291',title:'Autoscope Vision Sensors and Comm Managers',
+   category:'ITS / Detection',entity:'Texas Department of Transportation (TxDOT)',
+   entityType:'state',due:'2026-05-26',source:'ESBD',
+   url:'https://www.txsmartbuy.gov/esbd'},
+  {bid:'6498-72-001_0526',
+   title:'Local Let Maintenance Contract, Trinity Co \u2014 Traffic Control Services',
+   category:'Traffic Control',entity:'Texas Department of Transportation (TxDOT)',
+   entityType:'state',due:'2026-05-20',source:'ESBD',
+   url:'https://www.txsmartbuy.gov/esbd'},
+  {bid:'6100019667',
+   title:'Request for Proposals \u2013 Downtown Accessibility and Mobility Study',
+   category:'Transportation Planning',entity:'City of San Antonio',
+   entityType:'city',due:'2026-05-20',source:'ESBD',
+   url:'https://www.txsmartbuy.gov/esbd'},
+  {bid:'RFP2016-017',
+   title:'Waco MPO Transportation Signage Inventory and Demonstration Projects',
+   category:'Signing & Marking',entity:'Waco Metropolitan Planning Organization',
+   entityType:'mpo',due:'2026-05-20',source:'ESBD',
+   url:'https://www.txsmartbuy.gov/esbd'}
+ ]
+};
+
+const WINDOWS=[
+ {label:'2 weeks',days:14},{label:'1 month',days:30},{label:'3 months',days:91},
+ {label:'6 months',days:182,def:true},{label:'1 year',days:365},
+ {label:'2 years',days:730}
+];
+
+/* ===================== TAB 1 STATE ===================== */
+let DATA=JSON.parse(JSON.stringify(SEED));
+let rWindow=182, rCats=new Set(), showClosed=false;
+let rRangeOn=false, rFrom='', rTo='';
+let rKeyword='';
+
+function daysLeft(due){
+  const d=new Date(due+'T23:59:59'); const now=new Date();
+  return Math.floor((d-now)/86400000);
+}
+function allCats(){
+  const s=new Set(); DATA.records.forEach(r=>s.add(r.category)); return [...s].sort();
+}
+function renderRWindows(){
+  const b=document.getElementById('r-windows'); b.innerHTML='';
+  WINDOWS.forEach(w=>{
+    const e=document.createElement('button');
+    e.className='pill'+((!rRangeOn&&rWindow===w.days)?' on':''); e.textContent=w.label;
+    e.onclick=()=>{rWindow=w.days;rRangeOn=false;rFrom='';rTo='';
+      document.getElementById('r-from').value='';
+      document.getElementById('r-to').value='';
+      document.getElementById('r-rangerow').classList.remove('active');
+      renderRWindows();renderResults();}; b.appendChild(e);
+  });
+}
+function renderRCats(){
+  const b=document.getElementById('r-cats'); b.innerHTML='';
+  const cats=allCats();
+  const all=document.createElement('button');
+  all.className='pill'+(rCats.size===0?' on':''); all.textContent='All';
+  all.onclick=()=>{rCats.clear();renderRCats();renderResults();};
+  b.appendChild(all);
+  cats.forEach(c=>{
+    const e=document.createElement('button');
+    e.className='pill'+(rCats.has(c)?' on':''); e.textContent=c;
+    e.onclick=()=>{rCats.has(c)?rCats.delete(c):rCats.add(c);
+      renderRCats();renderResults();};
+    b.appendChild(e);
+  });
+}
+function filteredRecords(){
+  const kw=rKeyword.trim().toLowerCase();
+  return DATA.records.filter(r=>{
+    if(rCats.size && !rCats.has(r.category)) return false;
+    if(kw && (r.title+' '+r.category).toLowerCase().indexOf(kw)===-1) return false;
+    const dl=daysLeft(r.due);
+    if(rRangeOn){
+      if(rFrom && r.due < rFrom) return false;
+      if(rTo && r.due > rTo) return false;
+      if(!showClosed && dl<0) return false;
+      return true;
+    }
+    if(!showClosed && dl<0) return false;
+    if(dl>rWindow) return false;
+    return true;
+  });
+}
+function renderResults(){
+  const root=document.getElementById('r-results'); root.innerHTML='';
+  const recs=filteredRecords();
+  document.getElementById('r-asof').innerHTML=
+    '|&nbsp;&nbsp;source: '+DATA.source;
+  /* group by entity */
+  const groups={};
+  recs.forEach(r=>{(groups[r.entity]=groups[r.entity]||[]).push(r);});
+  const entities=Object.keys(groups).sort();
+  document.getElementById('r-count').textContent=recs.length;
+  document.getElementById('r-ents').textContent=entities.length;
+  document.getElementById('r-pdf').disabled=recs.length===0;
+  if(!recs.length){
+    root.innerHTML='<div class="empty">No open procurements match this filter.<br>'
+      +'Try a longer window, clear the category filter, enable "show closed",<br>'
+      +'or load a fresh rfp_data.json (run tx_rfp_scraper.py).</div>';
+    return;
+  }
+  entities.forEach(ent=>{
+    const items=groups[ent];
+    const et=items[0].entityType;
+    const g=document.createElement('div'); g.className='egroup';
+    let h='<div class="ehead">'+
+      '<span class="etype et-'+et+'">'+et+'</span>'+
+      '<span class="ename">'+ent+'</span>'+
+      '<span class="ecount">'+items.length+' open</span></div>';
+    items.sort((a,b)=>a.due.localeCompare(b.due));
+    items.forEach(r=>{
+      const dl=daysLeft(r.due);
+      let bcls='bg-open',btxt=dl+' DAYS LEFT';
+      if(dl<0){bcls='bg-closed';btxt='CLOSED';}
+      else if(dl<=7){bcls='bg-soon';btxt=dl+' DAYS LEFT';}
+      h+='<div class="row">'+
+        '<div class="rbid">'+r.bid+'</div>'+
+        '<div class="rmain"><div class="rtitle">'+r.title+'</div>'+
+          '<span class="rcat">'+r.category+'</span></div>'+
+        '<div class="rright"><div class="rdue">due '+r.due+'</div>'+
+          '<span class="rbadge '+bcls+'">'+btxt+'</span><br>'+
+          '<a class="rlink" target="_blank" rel="noopener" href="'+r.url+
+            '">View record \u203A</a></div>'+
+      '</div>';
+    });
+    g.innerHTML=h; root.appendChild(g);
+  });
+}
+document.getElementById('r-closed').addEventListener('change',e=>{
+  showClosed=e.target.checked;renderResults();});
+document.getElementById('r-load').onclick=()=>document.getElementById('r-file').click();
+document.getElementById('r-file').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const fr=new FileReader();
+  fr.onload=()=>{
+    try{
+      const j=JSON.parse(fr.result);
+      if(!j.records||!Array.isArray(j.records))throw new Error('no records[]');
+      DATA=j; DATA.source=(j.source||'loaded file')
+        +' \u2014 '+(j.records.length)+' records';
+      rCats.clear(); renderRCats(); renderResults();
+      /* rebuild the Portal Directory from the freshly loaded portals[] */
+      buildDir(); renderDir(); populateJpSelect();
+      /* keep the Portal Directory bid listing in sync with new data */
+      const jpSel=document.getElementById('jp-select');
+      if(jpSel&&jpSel.value){
+        const jd=DDATA.find(x=>x.id===jpSel.value);
+        if(jd)renderJpResult(jd);
+      }
+      toast('Loaded '+j.records.length+' records');
+    }catch(err){toast('Invalid file: '+err.message);}
+  };
+  fr.readAsText(f);
+});
+/* Tab 1 custom date range */
+function rRangeChanged(){
+  rFrom=document.getElementById('r-from').value;
+  rTo=document.getElementById('r-to').value;
+  rRangeOn=!!(rFrom||rTo);
+  document.getElementById('r-rangerow').classList.toggle('active',rRangeOn);
+  renderRWindows(); renderResults();
+}
+document.getElementById('r-from').addEventListener('change',rRangeChanged);
+document.getElementById('r-to').addEventListener('change',rRangeChanged);
+document.getElementById('r-rangeclear').onclick=()=>{
+  rFrom='';rTo='';rRangeOn=false;
+  document.getElementById('r-from').value='';
+  document.getElementById('r-to').value='';
+  document.getElementById('r-rangerow').classList.remove('active');
+  renderRWindows(); renderResults();
+};
+document.getElementById('r-kw').addEventListener('input',e=>{
+  rKeyword=e.target.value; renderResults();
+});
+
+/* ===================== TAB 1 PDF ===================== */
+document.getElementById('r-pdf').onclick=()=>{
+  const recs=filteredRecords();
+  if(!recs.length){toast('Nothing to export');return;}
+  toast('Building PDF\u2026'); setTimeout(()=>exportResultsPdf(recs),60);
+};
+function exportResultsPdf(recs){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'landscape',unit:'pt',format:'letter'});
+  const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight();
+  const stamp=new Date().toLocaleString('en-US');
+  /* cover */
+  doc.setFillColor(22,24,26);doc.rect(0,0,W,H,'F');
+  doc.setFillColor(12,92,61);doc.rect(0,0,W,140,'F');
+  doc.setFillColor(245,197,24);
+  for(let x=0;x<W;x+=36)doc.triangle(x,140,x+18,140,x+9,150,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(27);
+  doc.text('TEXAS TRAFFIC-ENGINEERING',54,68);
+  doc.text('OPEN PROCUREMENTS REPORT',54,100);
+  doc.setFontSize(9.5);doc.setTextColor(191,230,210);
+  doc.text('TRAFFIC  \u00B7  ITS  \u00B7  SIGNAL TIMING  \u2014  SOURCED FROM TEXAS SMARTBUY / ESBD',54,124);
+
+  const groups={}; recs.forEach(r=>{(groups[r.entity]=groups[r.entity]||[]).push(r);});
+  const ents=Object.keys(groups).sort();
+  doc.setFillColor(33,37,41);doc.roundedRect(54,180,W-108,118,8,8,'F');
+  doc.setTextColor(245,197,24);doc.setFontSize(11);doc.setFont('helvetica','bold');
+  doc.text('REPORT PARAMETERS',74,206);
+  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(236,235,230);
+  const p=[
+    ['Data source:',DATA.source],
+    ['Window:',rRangeOn
+       ?('closing '+(rFrom||'any')+' to '+(rTo||'any'))
+       :('closing within '+rWindow+' days')],
+    ['Category filter:',(rCats.size?[...rCats].join(', '):'all categories')
+       +(rKeyword.trim()?'   |   keyword: "'+rKeyword.trim()+'"':'')],
+    ['Open procurements:',recs.length+' across '+ents.length+' entities'],
+    ['Report generated:',stamp]
+  ];
+  let y=230;
+  p.forEach(r=>{doc.setTextColor(139,145,137);doc.text(r[0],74,y);
+    doc.setTextColor(236,235,230);
+    const wr=doc.splitTextToSize(r[1],W-108-200);doc.text(wr,230,y);
+    y+=Math.max(18,wr.length*13);});
+  doc.setTextColor(139,145,137);doc.setFontSize(8.4);
+  doc.text(doc.splitTextToSize('Note: ESBD covers state agencies and Texas '
+    +'SmartBuy member cities/counties only. Not every Texas municipality posts '
+    +'here. Use the console Portal Directory for jurisdictions that post on '
+    +'their own portals. Verify all details on the issuing portal before bidding.',
+    W-108),54,312);
+  doc.setFontSize(8);doc.setTextColor(106,112,104);
+  doc.text('Generated with the TX Traffic RFP Console.',54,H-32);
+
+  ents.forEach(ent=>{
+    doc.addPage();
+    doc.setFillColor(12,92,61);doc.rect(0,0,W,44,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(12);
+    doc.text(ent,40,29);
+    doc.setTextColor(191,230,210);doc.setFontSize(8.5);doc.setFont('helvetica','normal');
+    doc.text(groups[ent].length+' open',W-90,29);
+    const body=groups[ent].sort((a,b)=>a.due.localeCompare(b.due)).map((r,i)=>{
+      const dl=daysLeft(r.due);
+      return [String(i+1),r.bid,r.title,r.category,r.due,
+        dl<0?'CLOSED':(dl+' days')];
+    });
+    doc.autoTable({
+      startY:58,
+      head:[['#','Solicitation #','Title','Category','Due','Status']],
+      body:body,theme:'grid',
+      styles:{font:'helvetica',fontSize:8.4,cellPadding:5,textColor:[40,40,40],
+        lineColor:[210,210,210],lineWidth:0.4},
+      headStyles:{fillColor:[33,37,41],textColor:[245,197,24],fontStyle:'bold',
+        fontSize:8.2},
+      alternateRowStyles:{fillColor:[245,246,244]},
+      columnStyles:{0:{cellWidth:24,halign:'center'},1:{cellWidth:110},
+        2:{cellWidth:'auto',fontStyle:'bold'},3:{cellWidth:110},
+        4:{cellWidth:62},5:{cellWidth:62,halign:'center'}},
+      didDrawCell:function(d){
+        if(d.section==='body'&&d.column.index===1){
+          const it=groups[ent][d.row.index];
+          doc.link(d.cell.x,d.cell.y,d.cell.width,d.cell.height,{url:it.url});
+        }
+      },
+      margin:{left:40,right:40}
+    });
+  });
+  const pg=doc.internal.getNumberOfPages();
+  for(let i=2;i<=pg;i++){doc.setPage(i);doc.setFontSize(7.6);
+    doc.setTextColor(150,150,150);
+    doc.text('TX Traffic RFP \u2013 Open Procurements  \u00B7  '+stamp,40,H-20);
+    doc.text('Page '+(i-1)+' / '+(pg-1),W-86,H-20);}
+  doc.save('TX_Traffic_Open_Procurements.pdf');
+  toast('PDF downloaded \u2713');
+}
+
+/* ===================== TAB 2: DIRECTORY ===================== */
+const REGIONS={state:'Statewide',dfw:'Dallas\u2013Fort Worth',
+  gulf:'Houston / Gulf Coast',central:'Central Texas',south:'South Texas',
+  west:'West Texas',panhandle:'Panhandle / North',east:'East Texas'};
+
+const PORTALS=[
+ {name:'Texas SmartBuy \u2013 ESBD',kind:'aggregator',region:'state',
+  portal:'https://www.txsmartbuy.gov/esbd',
+  note:'Statewide solicitation feed; state agencies + SmartBuy member locals.'},
+ {name:'BidNet Direct \u2013 Texas Purchasing Group',kind:'aggregator',region:'state',
+  portal:'https://www.bidnetdirect.com/texas',
+  note:'eProcurement portal used by NCTCOG, Travis County and many TX cities/counties.'},
+ {name:'DemandStar \u2013 Texas',kind:'aggregator',region:'state',
+  portal:'https://www.demandstar.com/app/browse-bids/states/texas',
+  note:'Aggregates bids from numerous Texas cities (incl. Plano) and counties.'},
+ {name:'Public Bid Tracker \u2013 Texas',kind:'aggregator',region:'state',
+  portal:'https://publicbidtracker.com/texas/open-bids/',
+  note:'Free read-only mirror of open ESBD solicitations.'},
+ {name:'TxDOT PEPS \u2013 Professional Services',kind:'transport',region:'state',
+  portal:'https://www.txdot.gov/business/peps/opportunities/peps-contract-advertisements.html',
+  note:'Engineering / traffic / ITS / TSMO consultant solicitations, quarterly waves.'},
+ {name:'TxDOT Procurement Portal (Bonfire)',kind:'transport',region:'state',
+  portal:'https://txdot.bonfirehub.com',note:'Electronic submittal portal for TxDOT PEPS.'},
+ {name:'TxDOT \u2013 Business & Bid Tabs',kind:'transport',region:'state',
+  portal:'https://www.txdot.gov/business.html',
+  note:'Construction lettings, bid tabs, consultant precertification.'},
+ {name:'NCTCOG (DFW MPO)',kind:'mpo',region:'dfw',
+  portal:'https://www.nctcog.org/agency-administration/purchasing',
+  note:'DFW MPO transportation-planning / TSMO RFPs via BidNet Direct.'},
+ {name:'H-GAC (Houston MPO)',kind:'mpo',region:'gulf',
+  portal:'https://procurement.opengov.com/portal/h-gac',
+  note:'8-county Houston MPO; transportation study solicitations on OpenGov.'},
+ {name:'CAMPO (Austin MPO)',kind:'mpo',region:'central',
+  portal:'https://www.campotexas.org',note:'6-county Austin-area MPO.'},
+ {name:'Alamo Area MPO (San Antonio)',kind:'mpo',region:'south',
+  portal:'https://www.alamoareampo.org',note:'San Antonio / Bexar region MPO.'},
+ {name:'METRO (Houston)',kind:'transit',region:'gulf',
+  portal:'https://www.ridemetro.org',note:'Houston transit; ITS & signal-priority procurement.'},
+ {name:'DART (Dallas)',kind:'transit',region:'dfw',
+  portal:'https://www.dart.org',note:'Dallas-region transit; corridor / ITS solicitations.'},
+ {name:'VIA (San Antonio)',kind:'transit',region:'south',
+  portal:'https://www.viainfo.net',note:'San Antonio transit procurement.'},
+ {name:'CapMetro (Austin)',kind:'transit',region:'central',
+  portal:'https://www.capmetro.org',note:'Austin transit; signal-priority & mobility procurement.'},
+ {name:'Harris County Purchasing',kind:'county',region:'gulf',
+  portal:'https://purchasing.harriscountytx.gov/',note:'Verified direct portal.'},
+ {name:'Travis County (BidNet Direct)',kind:'county',region:'central',
+  portal:'https://www.bidnetdirect.com/texas/traviscounty',note:'Verified direct portal.'},
+ {name:'Bexar County Purchasing',kind:'county',region:'south',
+  portal:'https://www.bexar.org/581/Purchasing-Department',note:'Verified direct portal.'},
+ {name:'El Paso County Purchasing',kind:'county',region:'west',
+  portal:'https://www.epcounty.com/purchasing/bids/default.htm',note:'Verified direct portal.'},
+ {name:'City of El Paso (Ionwave)',kind:'city',region:'west',
+  portal:'https://elpasotexas.ionwave.net/CurrentSourcingEvents.aspx',
+  note:'Verified direct e-bid portal \u2014 current sourcing events.'},
+ {name:'City of Plano (Ionwave)',kind:'city',region:'dfw',
+  portal:'https://planotx.ionwave.net/SourcingEvents.aspx?SourceType=1',
+  note:'Verified direct e-bid portal \u2014 all current sourcing events.'},
+ {name:'City of San Antonio Purchasing',kind:'city',region:'south',
+  portal:'https://www.sanantonio.gov/purchasing',note:'Verified; includes TCI solicitations.'},
+ {name:'City of Houston (Beacon Bid)',kind:'city',region:'gulf',
+  portal:'https://www.houstontx.gov/purchasing/',note:'Verified; e-bidding via Beacon Bid.'}
+];
+/* [name, region, official bid-portal URL]  -- every entry has a direct portal */
+const CITIES=[
+ ['Dallas','dfw','https://dallascityhall.com/departments/procurement/Pages/default.aspx'],
+ ['Fort Worth','dfw','https://www.fortworthtexas.gov/departments/finance/purchasing/bids-current'],
+ ['Arlington','dfw','https://www.arlingtontx.gov/city_hall/departments/finance/purchasing/bidding_procurement'],
+ ['Irving','dfw','https://cityofirving.ionwave.net/CurrentSourcingEvents.aspx'],
+ ['Garland','dfw','https://garlandtx.gov/Bids.aspx'],
+ ['Frisco','dfw','https://www.friscotexas.gov/883/Current-Bids'],
+ ['McKinney','dfw','https://mckinneytexas.org/168/Procurement-Services'],
+ ['Grand Prairie','dfw','https://www.gptx.org/Departments/Purchasing'],
+ ['Mesquite','dfw','https://www.cityofmesquite.com/674/Bid-Openings-Specifications-Conferences'],
+ ['Denton','dfw','https://www.publicpurchase.com/gems/denton,tx/buyer/public/home'],
+ ['Carrollton','dfw','https://www.cityofcarrollton.com/departments/departments-a-f/finance/purchasing/current-bids'],
+ ['Richardson','dfw','https://www.cor.net/departments/purchasing'],
+ ['Lewisville','dfw','https://www.cityoflewisville.com/about-us/city-departments/purchasing/city-bid-information'],
+ ['Allen','dfw','https://www.cityofallen.org/906/Purchasing'],
+ ['Mansfield','dfw','https://www.mansfieldtexas.gov/Bids.aspx'],
+ ['Grapevine','dfw','https://www.grapevinetexas.gov/111/Purchasing'],
+ ['Rockwall','dfw','https://www.rockwall.com/finance.asp'],
+ ['Flower Mound','dfw','https://www.flower-mound.com/302/Active-Bids-and-Proposals'],
+ ['Austin','central','https://financeonline.austintexas.gov/afo/account_services/solicitation/solicitations.cfm'],
+ ['Round Rock','central','https://www.roundrocktexas.gov/city-businesses/solicitations/'],
+ ['Cedar Park','central','https://www.cedarparktexas.gov/Bids.aspx'],
+ ['Georgetown','central','https://purchasing.georgetown.org/bid-information/'],
+ ['Pflugerville','central','https://www.pflugervilletx.gov/for-businesses/bids-rfqs/bid-and-procurement-information'],
+ ['San Marcos','central','https://www.sanmarcostx.gov/Bids.aspx'],
+ ['Temple','central','https://www.templetx.gov/departments/city_departments/purchasing/bidding_opportunities.php'],
+ ['Killeen','central','https://www.killeentexas.gov/Bids.aspx'],
+ ['Waco','central','https://www.waco-texas.com/bids.asp'],
+ ['College Station','central','https://www.cstx.gov/departments___city_hall/fiscal/purchasing/online_bidding'],
+ ['Bryan','central','https://www.bryantx.gov/purchasing-services/'],
+ ['Pasadena','gulf','https://www.pasadenatx.gov/611/Bid-Opportunities'],
+ ['Pearland','gulf','https://www.pearlandtx.gov/business/doing-business/bid-opportunities'],
+ ['Sugar Land','gulf','https://sugarlandtx.gov/290/Bid-Opportunities'],
+ ['Baytown','gulf','https://baytown.org/563/Bids-Vendor-Information'],
+ ['League City','gulf','https://leaguecitytx.gov/bids.aspx'],
+ ['Galveston','gulf','https://www.galvestontx.gov/Bids.aspx'],
+ ['Conroe','gulf','https://www.cityofconroe.org/departments/purchasing/current-proposal-bid-opportunities'],
+ ['Beaumont','gulf','https://beaumonttexas.gov/departments/purchasing/bid-information/'],
+ ['New Braunfels','south','https://www.newbraunfels.gov/Bids.aspx'],
+ ['Schertz','south','https://www.schertz.com/2237/Bid-Opportunities'],
+ ['Corpus Christi','south','https://www.cctexas.com/business/supplierportal'],
+ ['Laredo','south','https://www.cityoflaredo.com/bids-and-rfps.html'],
+ ['McAllen','south','https://mcallen.procureware.com/Bids'],
+ ['Brownsville','south','https://www.brownsvilletx.gov/Bids.aspx'],
+ ['Edinburg','south','https://cityofedinburg.com/departments/finance/open_bid_notices.php'],
+ ['Harlingen','south','https://harlingentx.gov/departments/finance/bid_opportunities.php'],
+ ['Victoria','south','https://www.victoriatx.gov/317/Bid-Opportunities'],
+ ['Midland','west','https://www.midlandtexas.gov/bids.aspx'],
+ ['Odessa','west','https://www.odessa-tx.gov/Bids.aspx'],
+ ['San Angelo','west','https://www.sanangelo.gov/Bids.aspx'],
+ ['Abilene','west','https://www.abilenetx.gov/Bids.aspx'],
+ ['Lubbock','panhandle','https://ci.lubbock.tx.us/departments/purchasing-contract-management'],
+ ['Amarillo','panhandle','https://www.amarillo.gov/departments/public-safety-and-organizational-services/finance/purchasing/online-bid-opportunities'],
+ ['Wichita Falls','panhandle','http://wichitafallstx.gov/bids.aspx'],
+ ['Tyler','east','https://www.cityoftyler.org/government/departments/purchasing/vendor-bid-list'],
+ ['Longview','east','https://longviewtexas.gov/bids.aspx'],
+ ['Texarkana','east','https://www.texarkanatexas.gov/Bids.aspx']
+];
+const COUNTIES=[
+ ['Dallas','dfw','https://www.dallascounty.org/departments/purchasing/current-business-ops.php'],
+ ['Tarrant','dfw','https://access.tarrantcounty.com/en/purchasing/bids---rfps.html'],
+ ['Collin','dfw','https://www.collincountytx.gov/purchasing/Pages/default.aspx'],
+ ['Denton','dfw','https://www.dentoncounty.gov/1434/Bid-Opportunities'],
+ ['Ellis','dfw','https://www.co.ellis.tx.us/Bids.aspx'],
+ ['Johnson','dfw','https://www.johnsoncountytx.org/departments/purchasing/competitive-bidding-information'],
+ ['Parker','dfw','https://www.parkercountytx.com/387/Bids-Request-for-Proposals'],
+ ['Rockwall','dfw','https://www.rockwallcountytexas.com/811/Requests-for-BidsProposals'],
+ ['Travis','central','https://www.traviscountytx.gov/purchasing/solicitation'],
+ ['Williamson','central','https://www.wilco.org/Purchasing'],
+ ['Hays','central','https://hayscountytx.com/departments/auditor/purchasing/bidding-opportunities/'],
+ ['Bell','central','https://bellcountytx.ionwave.net/CurrentSourcingEvents.aspx'],
+ ['McLennan','central','https://co.mclennan.tx.us/232/Open-Bids-RFPs-and-RFQs'],
+ ['Brazos','central','https://www.brazoscountytx.gov/222/Bid-RFP-RFQ-IQ-Information'],
+ ['Fort Bend','gulf','https://www.fortbendcountytx.gov/government/departments/purchasing-agent/current-bids-rfps-rfqs-quotes'],
+ ['Montgomery','gulf','https://www.mctx.org/departments/departments_l_-_p/purchasing/bid_proposal_opening_date.php'],
+ ['Brazoria','gulf','https://www.brazoriacountytx.gov/departments/purchasing/bid-opportunities'],
+ ['Galveston','gulf','https://www.galvestoncountytx.gov/county-offices/purchasing'],
+ ['Jefferson','gulf','https://co.jefferson.tx.us/Purchasing/NoticesForBid'],
+ ['Guadalupe','south','https://www.bidnetdirect.com/texas/guadalupecounty'],
+ ['Nueces','south','https://www.nuecesco.com/county-services/purchasing/bids'],
+ ['Hidalgo','south','https://www.hidalgocounty.us/bids.aspx'],
+ ['Cameron','south','https://www.cameroncountytx.gov/purchasing-department/'],
+ ['Webb','south','https://www.webbcountytx.gov/purchasingagent/publicnoticerfp/'],
+ ['Comal','south','https://www.co.comal.tx.us/PUR.htm'],
+ ['Midland','west','https://www.co.midland.tx.us/Bids.aspx'],
+ ['Ector','west','https://www.co.ector.tx.us/page/ector.Bids'],
+ ['Tom Green','west','https://www.tomgreencountytx.gov/page/pur.PurchasingHome'],
+ ['Taylor','west','https://www.taylorcounty.texas.gov/bids.aspx'],
+ ['Potter','panhandle','https://www.co.potter.tx.us/page/Purchasing.BidOpportunities'],
+ ['Smith','east','https://www.smith-county.com/business/bids'],
+ ['Gregg','east','https://www.co.gregg.tx.us/current-bids']
+];
+let dFilter='all', dFilterText='';
+const dSelected=new Set();
+let DDATA=[];
+
+/* Region hint: the old hard-coded CITIES/COUNTIES regions are kept ONLY as
+   a name -> region lookup, so directory cards still group sensibly. The
+   authoritative name + URL + platform now come from rfp_data.json's
+   "portals" list (emitted by tx_rfp_scraper.py from portals.txt), which
+   means the directory can no longer drift from what the scraper uses. */
+const REGION_HINT={};
+CITIES.forEach(c=>{REGION_HINT['city|'+c[0].toLowerCase()]=c[1];});
+COUNTIES.forEach(c=>{REGION_HINT['county|'+c[0].toLowerCase()]=c[1];});
+
+function buildDir(){
+  DDATA=[];
+  PORTALS.forEach(p=>DDATA.push(Object.assign({},p,{hasPortal:true})));
+  if(DATA.portals&&DATA.portals.length){
+    DATA.portals.forEach(p=>{
+      const kind=(p.type==='county')?'county':'city';
+      const bare=(p.name||'').replace(/^City of /,'').replace(/ County$/,'');
+      const region=REGION_HINT[kind+'|'+bare.toLowerCase()]||'state';
+      DDATA.push({name:p.name,cityName:p.name,kind:kind,region:region,
+        portal:p.url||'',platform:p.platform||'',hasPortal:!!p.url,
+        note:'Official bid portal for '+p.name
+          +(p.platform?' \u2014 '+p.platform+' platform.':'.')});
+    });
+  }else{
+    CITIES.forEach(c=>DDATA.push({name:'City of '+c[0],cityName:'City of '+c[0],
+      kind:'city',region:c[1],portal:c[2],hasPortal:true,
+      note:'Official bid portal for City of '+c[0]+'.'}));
+    COUNTIES.forEach(c=>DDATA.push({name:c[0]+' County',cityName:c[0]+' County',
+      kind:'county',region:c[1],portal:c[2],hasPortal:true,
+      note:'Official bid portal for '+c[0]+' County.'}));
+  }
+  DDATA.forEach((d,i)=>d.id='d'+i);
+  dSelected.clear();
+  DDATA.forEach(d=>dSelected.add(d.id));
+}
+function dVisible(){
+  return DDATA.filter(d=>{
+    if(dFilter!=='all'&&d.kind!==dFilter)return false;
+    if(dFilterText){const h=(d.name+' '+REGIONS[d.region]).toLowerCase();
+      if(h.indexOf(dFilterText.toLowerCase())===-1)return false;}
+    return true;});
+}
+function dKindLabel(k){return {aggregator:'Aggregator',transport:'State / TxDOT',
+  mpo:'MPO / COG',transit:'Transit',city:'City',county:'County'}[k]||k;}
+function renderDir(){
+  const root=document.getElementById('d-results');root.innerHTML='';
+  const vis=dVisible();
+  document.getElementById('d-count').textContent=DDATA.length;
+  document.getElementById('d-sel').textContent=dSelected.size;
+  document.getElementById('d-pdf').disabled=dSelected.size===0;
+  if(!vis.length){root.innerHTML='<div class="empty">No portals match this filter.</div>';return;}
+  const order=['aggregator','transport','mpo','transit','city','county'];
+  const titles={aggregator:'Statewide Aggregators',transport:'State & TxDOT',
+    mpo:'MPOs & COGs',transit:'Transit Agencies',city:'Cities',county:'Counties'};
+  order.forEach(k=>{
+    const items=vis.filter(d=>d.kind===k);if(!items.length)return;
+    const t=document.createElement('div');t.className='sectiontitle';
+    t.textContent=titles[k]+'  ('+items.length+')';root.appendChild(t);
+    const g=document.createElement('div');g.className='grid';
+    items.forEach(d=>{
+      const card=document.createElement('div');card.className='dcard k-'+d.kind;
+      const sel=dSelected.has(d.id);
+      card.innerHTML=
+        '<div class="dtop"><div class="dname">'+(d.cityName||d.name)+'</div>'+
+          '<span class="etype et-'+(d.kind==='aggregator'||d.kind==='transport'
+            ?'state':d.kind)+'">'+dKindLabel(d.kind)+'</span></div>'+
+        '<div class="dnote">'+d.note+'</div>'+
+        '<div class="dactions">'+
+          '<a class="act act-s" target="_blank" rel="noopener" href="'+d.portal+
+            '">\u25B8 Open Bid Portal</a>'+
+        '</div>'+
+        '<label class="toggle" style="margin-top:9px;font-size:9.5px">'+
+          '<input type="checkbox" '+(sel?'checked':'')+' data-id="'+d.id+'">'+
+          'include in PDF</label>';
+      card.querySelector('input').addEventListener('change',e=>{
+        e.target.checked?dSelected.add(d.id):dSelected.delete(d.id);
+        document.getElementById('d-sel').textContent=dSelected.size;
+        document.getElementById('d-pdf').disabled=dSelected.size===0;});
+      g.appendChild(card);
+    });
+    root.appendChild(g);
+  });
+}
+document.querySelectorAll('.fchip').forEach(c=>{c.onclick=()=>{
+  document.querySelectorAll('.fchip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on');dFilter=c.dataset.f;renderDir();};});
+document.getElementById('d-filter').addEventListener('input',e=>{
+  dFilterText=e.target.value;renderDir();});
+document.getElementById('d-all').onclick=()=>{
+  dVisible().forEach(d=>dSelected.add(d.id));renderDir();};
+document.getElementById('d-none').onclick=()=>{dSelected.clear();renderDir();};
+
+document.getElementById('d-pdf').onclick=()=>{
+  const chosen=DDATA.filter(d=>dSelected.has(d.id));
+  if(!chosen.length){toast('Select at least one');return;}
+  toast('Building directory\u2026');setTimeout(()=>exportDirPdf(chosen),60);
+};
+function exportDirPdf(chosen){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'landscape',unit:'pt',format:'letter'});
+  const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight();
+  const stamp=new Date().toLocaleString('en-US');
+  doc.setFillColor(22,24,26);doc.rect(0,0,W,H,'F');
+  doc.setFillColor(12,92,61);doc.rect(0,0,W,140,'F');
+  doc.setFillColor(245,197,24);
+  for(let x=0;x<W;x+=36)doc.triangle(x,140,x+18,140,x+9,150,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(27);
+  doc.text('TEXAS PROCUREMENT',54,68);doc.text('BID PORTAL DIRECTORY',54,100);
+  doc.setFontSize(9.5);doc.setTextColor(191,230,210);
+  doc.text('DIRECT LINKS TO OFFICIAL CITY / COUNTY / AGENCY BID PORTALS',54,124);
+  doc.setFillColor(33,37,41);doc.roundedRect(54,180,W-108,86,8,8,'F');
+  doc.setTextColor(245,197,24);doc.setFontSize(11);doc.setFont('helvetica','bold');
+  doc.text('SUMMARY',74,206);
+  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(236,235,230);
+  [['Bid portals included:',String(chosen.length)+' of '+DDATA.length],
+   ['Generated:',stamp]]
+   .forEach((r,i)=>{doc.setTextColor(139,145,137);doc.text(r[0],74,230+i*17);
+     doc.setTextColor(236,235,230);doc.text(r[1],240,230+i*17);});
+  doc.setTextColor(139,145,137);doc.setFontSize(8.4);
+  doc.text(doc.splitTextToSize('Each link below opens the jurisdiction\u2019s official '
+    +'procurement portal listing all current / open solicitations. Filter for '
+    +'traffic / signal / ITS items on the portal itself. Verify all details on '
+    +'the issuing portal before bidding.',W-108),54,272);
+  doc.setFontSize(8);doc.setTextColor(106,112,104);
+  doc.text('Generated with the TX Traffic RFP Console.',54,H-32);
+  const order=['aggregator','transport','mpo','transit','city','county'];
+  const titles={aggregator:'STATEWIDE AGGREGATORS',transport:'STATE & TxDOT',
+    mpo:'MPOs & COGs',transit:'TRANSIT',city:'CITIES',county:'COUNTIES'};
+  order.forEach(k=>{
+    const items=chosen.filter(d=>d.kind===k);if(!items.length)return;
+    doc.addPage();
+    doc.setFillColor(12,92,61);doc.rect(0,0,W,44,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(12);
+    doc.text(titles[k]+'  ('+items.length+')',40,29);
+    const body=items.map((d,i)=>[String(i+1),d.cityName||d.name,
+      REGIONS[d.region],'OPEN BID PORTAL \u2192']);
+    doc.autoTable({startY:58,
+      head:[['#','Jurisdiction','Region','Official bid portal (click)']],
+      body:body,theme:'grid',
+      styles:{font:'helvetica',fontSize:8.6,cellPadding:6,textColor:[40,40,40],
+        lineColor:[210,210,210],lineWidth:0.4},
+      headStyles:{fillColor:[33,37,41],textColor:[245,197,24],fontStyle:'bold'},
+      alternateRowStyles:{fillColor:[245,246,244]},
+      columnStyles:{0:{cellWidth:30,halign:'center'},1:{cellWidth:250,fontStyle:'bold'},
+        2:{cellWidth:150},3:{cellWidth:'auto',textColor:[12,92,61],fontStyle:'bold'}},
+      didDrawCell:function(dc){
+        if(dc.section!=='body')return;const it=items[dc.row.index];
+        if(dc.column.index===3)doc.link(dc.cell.x,dc.cell.y,dc.cell.width,
+          dc.cell.height,{url:it.portal});},
+      margin:{left:40,right:40}});
+  });
+  const pg=doc.internal.getNumberOfPages();
+  for(let i=2;i<=pg;i++){doc.setPage(i);doc.setFontSize(7.6);
+    doc.setTextColor(150,150,150);
+    doc.text('TX Bid Portal Directory  \u00B7  '+stamp,40,H-20);
+    doc.text('Page '+(i-1)+' / '+(pg-1),W-86,H-20);}
+  doc.save('TX_Bid_Portal_Directory.pdf');
+  toast('PDF downloaded \u2713');
+}
+
+/* ===================== JURISDICTION PICKER ===================== */
+function populateJpSelect(){
+  const sel=document.getElementById('jp-select');
+  const groups=[
+    ['city','Cities'],['county','Counties'],['aggregator','Statewide Aggregators'],
+    ['transport','State / TxDOT'],['mpo','MPOs & COGs'],['transit','Transit Agencies']
+  ];
+  sel.innerHTML='';
+  groups.forEach(([kind,label])=>{
+    const items=DDATA.filter(d=>d.kind===kind)
+      .sort((a,b)=>(a.cityName||a.name).localeCompare(b.cityName||b.name));
+    if(!items.length)return;
+    const og=document.createElement('optgroup'); og.label=label;
+    items.forEach(d=>{
+      const o=document.createElement('option');
+      o.value=d.id;
+      o.textContent=(d.cityName||d.name);
+      og.appendChild(o);
+    });
+    sel.appendChild(og);
+  });
+  sel.onchange=()=>{const d=DDATA.find(x=>x.id===sel.value);if(d)renderJpResult(d);};
+  if(sel.value){const d=DDATA.find(x=>x.id===sel.value);if(d)renderJpResult(d);}
+}
+/* ---- match dataset records to a chosen jurisdiction --------------------- */
+function jpMatchRecords(d){
+  const recs=(DATA&&Array.isArray(DATA.records))?DATA.records:[];
+  const norm=s=>(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ')
+                .replace(/\s+/g,' ').trim();
+  /* whole-phrase containment, so "Allen" never matches "McAllen" */
+  const phrase=(hay,needle)=>!!needle &&
+    (' '+hay+' ').indexOf(' '+needle+' ')!==-1;
+  /* Statewide aggregators ARE the whole ESBD feed */
+  if(d.kind==='aggregator') return recs.slice();
+  /* State / TxDOT portals -> all state-level (TxDOT) records */
+  if(d.kind==='transport'){
+    return recs.filter(r=>{
+      const e=norm(r.entity);
+      return r.entityType==='state' || e.indexOf('txdot')!==-1
+        || e.indexOf('department of transportation')!==-1;
+    });
+  }
+  const expect={city:'city',county:'county',mpo:'mpo',transit:'transit'}[d.kind];
+  const targets=[norm(d.name)];
+  if(d.cityName) targets.push(norm(d.cityName));
+  /* also match on the BARE jurisdiction name (no "City of" / "County"), so a
+     record whose entity is e.g. "Dallas Water Utilities" or "Bryan Public
+     Works" still attaches to its city. Whole-word matching below still keeps
+     "Allen" from matching "McAllen", and the entityType check keeps a city
+     card from pulling in that place's county records. */
+  const bare=(d.name||'').replace(/^\s*City of\s+/i,'')
+                         .replace(/\s+County\s*$/i,'');
+  if(bare) targets.push(norm(bare));
+  return recs.filter(r=>{
+    /* a city must not match an MPO/county record of the same place name */
+    if(expect && r.entityType && r.entityType!==expect) return false;
+    const e=norm(r.entity);
+    return targets.some(t=>t && (e===t || phrase(e,t) || phrase(t,e)));
+  });
+}
+
+/* ---- render matched open bids on screen (like Open Procurements) -------- */
+function renderJpBids(d){
+  const box=document.getElementById('jp-bids');
+  if(!box)return;
+  const name=d.cityName||d.name;
+  const all=jpMatchRecords(d);
+  /* A record is "closed" only if it has a parseable deadline that is past.
+     A record with a blank/unparseable due date is treated as OPEN (unknown,
+     not closed) -- otherwise it would fall through both filters and vanish,
+     which is why the directory was under-listing a jurisdiction's bids. */
+  const closed=all.filter(r=>daysLeft(r.due)<0);
+  const open=all.filter(r=>!(daysLeft(r.due)<0))
+                .sort((a,b)=>(a.due||'').localeCompare(b.due||''));
+  const src=(DATA&&DATA.source)?DATA.source:'Texas SmartBuy / ESBD';
+
+  if(!open.length){
+    box.innerHTML=
+      '<div class="jp-bidsbox">'+
+        '<div class="jp-bidshead">'+
+          '<span class="jp-bidstitle">Open bids in console</span>'+
+          '<span class="jp-bidsmeta">0 open for '+name+
+            (closed.length?'  \u00B7  '+closed.length+' recently closed':'')+
+          '</span></div>'+
+        '<div class="jp-bidsempty">No open machine-readable procurements for '+
+          '<b>'+name+'</b> in the current dataset.<br>'+
+          '<span style="font-size:10.5px">('+src+')</span>'+
+          (closed.length?'<br><br>'+closed.length+' matching solicitation'+
+            (closed.length>1?'s are':' is')+' in the dataset but past deadline.':'')+
+          '<br><br>Most jurisdictions post only on their own portal &mdash; use '+
+          '<b>Open official portal \u25B8</b> above for their live bids. To pull '+
+          'more into the console, load a fresh <b>rfp_data.json</b> '+
+          '(run <b>tx_rfp_scraper.py</b>) in the <b>Open Procurements</b> tab.'+
+        '</div>'+
+      '</div>';
+    return;
+  }
+
+  let h='<div class="jp-bidsbox">'+
+    '<div class="jp-bidshead">'+
+      '<span class="jp-bidstitle">Open bids in console</span>'+
+      '<span class="jp-bidsmeta">'+open.length+' open procurement'+
+        (open.length>1?'s':'')+' for '+name+
+        (closed.length?'  \u00B7  '+closed.length+' closed':'')+
+        '  \u00B7  source: '+src+'</span></div>';
+  /* group by issuing entity, exactly like the Open Procurements tab */
+  const groups={};
+  open.forEach(r=>{(groups[r.entity]=groups[r.entity]||[]).push(r);});
+  Object.keys(groups).sort().forEach(ent=>{
+    const items=groups[ent];
+    const et=items[0].entityType||'state';
+    h+='<div class="egroup"><div class="ehead">'+
+      '<span class="etype et-'+et+'">'+et+'</span>'+
+      '<span class="ename">'+ent+'</span>'+
+      '<span class="ecount">'+items.length+' open</span></div>';
+    items.forEach(r=>{
+      const dl=daysLeft(r.due);
+      let bcls='bg-open',btxt=dl+' DAYS LEFT';
+      if(isNaN(dl)){bcls='bg-open';btxt='OPEN \u00B7 NO DATE';}
+      else if(dl<0){bcls='bg-closed';btxt='CLOSED';}
+      else if(dl<=7){bcls='bg-soon';btxt=dl+' DAYS LEFT';}
+      h+='<div class="row">'+
+        '<div class="rbid">'+r.bid+'</div>'+
+        '<div class="rmain"><div class="rtitle">'+r.title+'</div>'+
+          '<span class="rcat">'+r.category+'</span></div>'+
+        '<div class="rright"><div class="rdue">due '+r.due+'</div>'+
+          '<span class="rbadge '+bcls+'">'+btxt+'</span><br>'+
+          '<a class="rlink" target="_blank" rel="noopener" href="'+r.url+
+            '">View record \u203A</a></div>'+
+      '</div>';
+    });
+    h+='</div>';
+  });
+  h+='</div>';
+  box.innerHTML=h;
+}
+
+function renderJpResult(d){
+  const url=d.portal;
+  const box=document.getElementById('jp-result');
+  const openCount=jpMatchRecords(d).filter(r=>daysLeft(r.due)>=0).length;
+  const cntPill=openCount
+    ? '<span class="jp-pill indata">'+openCount+' OPEN IN DATASET</span>'
+    : '<span class="jp-pill nodata">NOT IN DATASET</span>';
+  box.innerHTML=
+    '<div class="jp-card">'+
+      '<div class="jp-cardtop">'+
+        '<span class="jp-cardname">'+(d.cityName||d.name)+'</span>'+
+        '<span class="jp-pill verified">\u2714 DIRECT BID PORTAL</span>'+
+        cntPill+
+      '</div>'+
+      '<div class="jp-urlrow">'+
+        '<input class="jp-url" id="jp-url" readonly value="'+url+'">'+
+        '<button class="jp-mini" id="jp-copy">Copy link</button>'+
+        '<a class="jp-mini go" target="_blank" rel="noopener" href="'+url+
+          '">Open portal \u25B8</a>'+
+      '</div>'+
+      '<div class="jp-urlrow" style="margin-top:9px">'+
+        '<button class="jp-mini list" id="jp-list">\uD83D\uDCCB '+
+          'List open bids on screen</button>'+
+        '<span class="jp-hint" style="margin-top:0;flex:1;min-width:210px">'+
+          'Lists open procurements for this jurisdiction from the loaded '+
+          'ESBD dataset \u2014 on screen, like the Open Procurements tab.</span>'+
+      '</div>'+
+      '<div class="jp-hint">The portal link opens '+(d.cityName||d.name)+
+        '\u2019s official page listing all current / open solicitations. '+
+        'Filter for traffic / signal / ITS items there.</div>'+
+    '</div>'+
+    '<div id="jp-bids"></div>';
+  const copyBtn=document.getElementById('jp-copy');
+  const inp=document.getElementById('jp-url');
+  copyBtn.onclick=()=>{
+    inp.select(); inp.setSelectionRange(0,99999);
+    let ok=false;
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(()=>toast('Link copied \u2713'))
+        .catch(()=>{try{document.execCommand('copy');ok=true;}catch(e){}
+          toast(ok?'Link copied \u2713':'Press Ctrl/Cmd+C to copy');});
+    }else{
+      try{document.execCommand('copy');ok=true;}catch(e){}
+      toast(ok?'Link copied \u2713':'Press Ctrl/Cmd+C to copy');
+    }
+  };
+  document.getElementById('jp-list').onclick=()=>{
+    renderJpBids(d);
+    document.getElementById('jp-bids').scrollIntoView(
+      {behavior:'smooth',block:'nearest'});
+  };
+  /* auto-list on selection so it behaves like the Open Procurements tab */
+  renderJpBids(d);
+}
+document.getElementById('jp-go').onclick=()=>{
+  const sel=document.getElementById('jp-select');
+  const d=DDATA.find(x=>x.id===sel.value);
+  if(!d){toast('Choose a jurisdiction');return;}
+  renderJpResult(d);
+  let w=null;
+  try{w=window.open(d.portal,'_blank','noopener');}catch(e){}
+  if(!w)toast('Pop-up blocked \u2014 use the Open \u25B8 link below');
+};
+
+/* ===================== TABS + INIT ===================== */
+function toast(m){const t=document.getElementById('toast');t.textContent=m;
+  t.classList.add('show');clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),2600);}
+document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on');
+  document.getElementById('panel-'+t.dataset.tab).classList.add('on');};});
+
+renderRWindows();renderRCats();renderResults();
+buildDir();renderDir();populateJpSelect();
+</script>
+</body>
+</html>

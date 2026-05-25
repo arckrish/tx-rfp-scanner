@@ -1,0 +1,28 @@
+# --- generated data (rebuild with ./refresh.sh) ---
+rfp_data.json
+backups/
+
+# --- local working files: saved portal pages & HAR captures ---
+html/
+*.har
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+
+# --- virtual environments ---
+venv/
+.venv/
+env/
+
+# --- Playwright browser cache ---
+.cache/
+ms-playwright/
+
+# --- OS / editor cruft ---
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
